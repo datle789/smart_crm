@@ -44,11 +44,25 @@ public class Notification {
         this.content = content;
     }
 
+    private int status;
+
+    public Notification() {
+        this.status = 1;
+    }
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
     @PrePersist
     public void setCreatedAt() {

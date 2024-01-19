@@ -27,6 +27,12 @@ public class Crm {
     @Column
     private String crmFile;
 
+    private int status;
+
+    public Crm() {
+        this.status = 1;
+    }
+
     @Column(name = "start_date")
     @Temporal(TemporalType.DATE)
     private Date startDate;
@@ -97,6 +103,14 @@ public class Crm {
         this.endDate = endDate;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     @PrePersist
     public void setCreatedAt() {
         this.createdAt = LocalDateTime.now();
@@ -127,6 +141,17 @@ public class Crm {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Transient
+    public String getUserName() {
+        return (user != null) ? user.getName() : null;
+    }
+
+    @Transient
+    public long getUserId() {
+        return (user != null) ? user.getId() : null;
+
     }
 
 }

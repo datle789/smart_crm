@@ -25,6 +25,12 @@ public class User {
     @Column
     private String avatar;
 
+    private int status;
+
+    public User() {
+        this.status = 1;
+    }
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -69,6 +75,14 @@ public class User {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     @PrePersist
