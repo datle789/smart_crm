@@ -2,6 +2,7 @@ package crm.demo.Dto;
 
 import java.time.LocalDateTime;
 
+import crm.demo.models.Crm;
 import crm.demo.models.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
@@ -18,7 +19,15 @@ public class NotificationDto {
 
     private LocalDateTime updatedAt;
 
-    private User user;
+    private Crm Crm;
+
+    public Crm getCrm() {
+        return Crm;
+    }
+
+    public void setCrm(Crm crm) {
+        Crm = crm;
+    }
 
     public long getId() {
         return id;
@@ -42,14 +51,6 @@ public class NotificationDto {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public LocalDateTime getCreatedAt() {

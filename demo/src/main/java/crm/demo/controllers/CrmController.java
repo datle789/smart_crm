@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import crm.demo.Dto.CrmDto;
 import crm.demo.models.Crm;
+import crm.demo.models.Notification;
 import crm.demo.models.User;
 import crm.demo.repo.CrmRepo;
+import crm.demo.repo.NotificationRepo;
 import crm.demo.repo.UserRepo;
 
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,6 +37,9 @@ public class CrmController {
     @Autowired
     private UserRepo userRepo;
 
+    @Autowired
+    private NotificationRepo notificationRepo;
+
     private static final Logger logger = LoggerFactory.getLogger(CrmController.class);
 
     @GetMapping(value = "/")
@@ -46,6 +51,7 @@ public class CrmController {
     @PostMapping(value = "/create")
     public ResponseEntity<String> createCrm(@RequestBody CrmDto crmDto) {
         Crm crm = new Crm();
+        Notification notification = new Notification();
         User user = userRepo.findById(crmDto.getUserId()).orElse(null);
         if (user != null) {
             crm.setUser(user);
@@ -56,6 +62,11 @@ public class CrmController {
             crm.setStartDate(crmDto.getStartDate());
             crm.setEndDate(crmDto.getEndDate());
             crmRepo.save(crm);
+
+            notification.setTitle(String.format("%s Tạo CRM", crm.getUserName()));
+            notification.setContent(crm.getDescription());
+            notification.setCrm(crm);
+            notificationRepo.save(notification);
 
             return ResponseEntity.ok("Crm created successfully");
         } else {
@@ -68,6 +79,7 @@ public class CrmController {
     @PutMapping(value = "/update/{id}")
     public ResponseEntity<String> updateCrm(@PathVariable long id, @RequestBody CrmDto crmDto) {
         // Crm crm = new Crm();
+        Notification notification = new Notification();
         Crm crm = crmRepo.findById(id).orElse(null);
         if (crm != null) {
             // crm.setUser(user);
@@ -78,6 +90,11 @@ public class CrmController {
             crm.setStartDate(crmDto.getStartDate());
             crm.setEndDate(crmDto.getEndDate());
             crmRepo.save(crm);
+
+            notification.setTitle(String.format("%s Sửa CRM", crm.getUserName()));
+            notification.setContent(crm.getDescription());
+            notification.setCrm(crm);
+            notificationRepo.save(notification);
 
             return ResponseEntity.ok("Crm updated successfully");
         } else {
@@ -93,6 +110,7 @@ public class CrmController {
         if (crm != null) {
             crm.setStatus(0);
             crmRepo.save(crm);
+
             return ResponseEntity.ok("Crm deleted successfully");
         } else {
             logger.info("Log message: crm không tồn tại");

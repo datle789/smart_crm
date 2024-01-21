@@ -2,13 +2,17 @@ package crm.demo.models;
 
 import java.sql.Date;
 import java.time.LocalDateTime;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "crms")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Crm {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -152,6 +156,19 @@ public class Crm {
     public long getUserId() {
         return (user != null) ? user.getId() : null;
 
+    }
+
+    @OneToMany(mappedBy = "Crm", cascade = CascadeType.ALL)
+    @JsonBackReference
+    // @JsonIgnore
+    private List<Notification> notifications;
+
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
     }
 
 }
