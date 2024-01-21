@@ -2,7 +2,10 @@ package crm.demo.Dto;
 
 import java.sql.Date;
 import java.time.LocalDateTime;
+import java.util.List;
 
+import crm.demo.models.Crm;
+import crm.demo.models.Notification;
 import crm.demo.models.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
@@ -15,6 +18,8 @@ public class CrmDto {
     private String customerName;
 
     private long phoneNumber;
+
+    private String title;
 
     private String description;
 
@@ -29,6 +34,26 @@ public class CrmDto {
     private LocalDateTime updatedAt;
 
     private User user;
+
+    private long userId;
+
+    private List<Notification> notifications;
+
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
 
     public long getId() {
         return id;
@@ -52,6 +77,14 @@ public class CrmDto {
 
     public void setPhoneNumber(long phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {

@@ -2,13 +2,17 @@ package crm.demo.models;
 
 import java.sql.Date;
 import java.time.LocalDateTime;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "crms")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Crm {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,10 +26,19 @@ public class Crm {
     private long phoneNumber;
 
     @Column
+    private String title;
+
+    @Column
     private String description;
 
     @Column
     private String crmFile;
+
+    private int status;
+
+    public Crm() {
+        this.status = 1;
+    }
 
     @Column(name = "start_date")
     @Temporal(TemporalType.DATE)
@@ -65,6 +78,14 @@ public class Crm {
         this.phoneNumber = phoneNumber;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -97,6 +118,14 @@ public class Crm {
         this.endDate = endDate;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     @PrePersist
     public void setCreatedAt() {
         this.createdAt = LocalDateTime.now();
@@ -127,6 +156,30 @@ public class Crm {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Transient
+    public String getUserName() {
+        return (user != null) ? user.getName() : null;
+    }
+
+    @Transient
+    public long getUserId() {
+        return (user != null) ? user.getId() : null;
+
+    }
+
+    @OneToMany(mappedBy = "Crm", cascade = CascadeType.ALL)
+    @JsonBackReference
+    // @JsonIgnore
+    private List<Notification> notifications;
+
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
     }
 
 }

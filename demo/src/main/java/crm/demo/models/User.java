@@ -25,6 +25,12 @@ public class User {
     @Column
     private String avatar;
 
+    private int status;
+
+    public User() {
+        this.status = 1;
+    }
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -71,6 +77,14 @@ public class User {
         this.avatar = avatar;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     @PrePersist
     public void setCreatedAt() {
         this.createdAt = LocalDateTime.now();
@@ -98,17 +112,6 @@ public class User {
 
     public void setCrms(List<Crm> crms) {
         this.crms = crms;
-    }
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Notification> notifications;
-
-    public List<Notification> getNotifications() {
-        return notifications;
-    }
-
-    public void setNotifications(List<Notification> notifications) {
-        this.notifications = notifications;
     }
 
 }

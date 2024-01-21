@@ -2,6 +2,7 @@ package crm.demo.models;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
@@ -44,11 +45,25 @@ public class Notification {
         this.content = content;
     }
 
+    private int status;
+
+    public Notification() {
+        this.status = 1;
+    }
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
     @PrePersist
     public void setCreatedAt() {
@@ -69,17 +84,17 @@ public class Notification {
     }
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "crm_id", referencedColumnName = "id")
     // @JsonBackReference
-    @JsonIgnore
-    private User user;
+    // @JsonIgnore
+    private Crm Crm;
 
-    public User getUser() {
-        return user;
+    public Crm getCrm() {
+        return Crm;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setCrm(Crm crm) {
+        Crm = crm;
     }
 
 }
