@@ -26,6 +26,9 @@ public class Crm {
     private long phoneNumber;
 
     @Column
+    private String title;
+
+    @Column
     private String description;
 
     @Column
@@ -73,6 +76,14 @@ public class Crm {
 
     public void setPhoneNumber(long phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {

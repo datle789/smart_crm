@@ -19,6 +19,8 @@ public class CrmDto {
 
     private long phoneNumber;
 
+    private String title;
+
     private String description;
 
     private String crmFile;
@@ -75,6 +77,14 @@ public class CrmDto {
 
     public void setPhoneNumber(long phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {

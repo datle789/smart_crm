@@ -57,13 +57,15 @@ public class CrmController {
             crm.setUser(user);
             crm.setCustomerName(crmDto.getCustomerName());
             crm.setPhoneNumber(crmDto.getPhoneNumber());
+            crm.setTitle(crmDto.getTitle());
             crm.setDescription(crmDto.getDescription());
             crm.setCrmFile(crmDto.getCrmFile());
             crm.setStartDate(crmDto.getStartDate());
             crm.setEndDate(crmDto.getEndDate());
             crmRepo.save(crm);
 
-            notification.setTitle(String.format("%s Tạo CRM", crm.getUserName()));
+            // notification.setTitle(String.format("%s Tạo CRM", crm.getUserName()));
+            notification.setTitle(crm.getTitle());
             notification.setContent(crm.getDescription());
             notification.setCrm(crm);
             notificationRepo.save(notification);
@@ -85,13 +87,14 @@ public class CrmController {
             // crm.setUser(user);
             crm.setCustomerName(crmDto.getCustomerName());
             crm.setPhoneNumber(crmDto.getPhoneNumber());
+            crm.setTitle(crmDto.getTitle());
             crm.setDescription(crmDto.getDescription());
             crm.setCrmFile(crmDto.getCrmFile());
             crm.setStartDate(crmDto.getStartDate());
             crm.setEndDate(crmDto.getEndDate());
             crmRepo.save(crm);
 
-            notification.setTitle(String.format("%s Sửa CRM", crm.getUserName()));
+            notification.setTitle(crm.getTitle());
             notification.setContent(crm.getDescription());
             notification.setCrm(crm);
             notificationRepo.save(notification);
