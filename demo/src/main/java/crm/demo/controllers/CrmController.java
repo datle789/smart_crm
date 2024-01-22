@@ -22,6 +22,9 @@ import crm.demo.models.User;
 import crm.demo.repo.CrmRepo;
 import crm.demo.repo.NotificationRepo;
 import crm.demo.repo.UserRepo;
+import crm.demo.services.NotificationService;
+import crm.demo.services.SendMailService;
+import io.micrometer.common.util.StringUtils;
 
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -40,6 +43,12 @@ public class CrmController {
     @Autowired
     private NotificationRepo notificationRepo;
 
+    @Autowired
+    private SendMailService emailService;
+
+    @Autowired
+    private NotificationService notificationService;
+
     private static final Logger logger = LoggerFactory.getLogger(CrmController.class);
 
     @GetMapping(value = "/")
@@ -50,8 +59,18 @@ public class CrmController {
 
     @PostMapping(value = "/create")
     public ResponseEntity<String> createCrm(@RequestBody CrmDto crmDto) {
+
+        // check input
+        if (StringUtils.isEmpty(crmDto.getCustomerName()) ||
+                crmDto.getPhoneNumber() == 0 ||
+                StringUtils.isEmpty(crmDto.getTitle()) ||
+                StringUtils.isEmpty(crmDto.getDescription()) ||
+                crmDto.getStartDate() == null ||
+                crmDto.getEndDate() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Missing required fields");
+        }
+
         Crm crm = new Crm();
-        Notification notification = new Notification();
         User user = userRepo.findById(crmDto.getUserId()).orElse(null);
         if (user != null) {
             crm.setUser(user);
@@ -64,11 +83,14 @@ public class CrmController {
             crm.setEndDate(crmDto.getEndDate());
             crmRepo.save(crm);
 
-            // notification.setTitle(String.format("%s Tạo CRM", crm.getUserName()));
-            notification.setTitle(crm.getTitle());
-            notification.setContent(crm.getDescription());
-            notification.setCrm(crm);
-            notificationRepo.save(notification);
+            // create notification
+            notificationService.createNotification(crm);
+
+            // send mail
+            String to = "datletb789@gmail.com";
+            String subject = crm.getTitle();
+            String body = crm.getDescription();
+            emailService.sendEmail(to, subject, body);
 
             return ResponseEntity.ok("Crm created successfully");
         } else {
@@ -80,11 +102,20 @@ public class CrmController {
 
     @PutMapping(value = "/update/{id}")
     public ResponseEntity<String> updateCrm(@PathVariable long id, @RequestBody CrmDto crmDto) {
-        // Crm crm = new Crm();
-        Notification notification = new Notification();
+
+        // check input
+        if (StringUtils.isEmpty(crmDto.getCustomerName()) ||
+                crmDto.getPhoneNumber() == 0 ||
+                StringUtils.isEmpty(crmDto.getTitle()) ||
+                StringUtils.isEmpty(crmDto.getDescription()) ||
+                crmDto.getStartDate() == null ||
+                crmDto.getEndDate() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Missing required fields");
+        }
+
         Crm crm = crmRepo.findById(id).orElse(null);
         if (crm != null) {
-            // crm.setUser(user);
+            // Update CRM
             crm.setCustomerName(crmDto.getCustomerName());
             crm.setPhoneNumber(crmDto.getPhoneNumber());
             crm.setTitle(crmDto.getTitle());
@@ -94,10 +125,14 @@ public class CrmController {
             crm.setEndDate(crmDto.getEndDate());
             crmRepo.save(crm);
 
-            notification.setTitle(crm.getTitle());
-            notification.setContent(crm.getDescription());
-            notification.setCrm(crm);
-            notificationRepo.save(notification);
+            // Create Notification
+            notificationService.createNotification(crm);
+
+            // Send Mail
+            String to = "datletb789@gmail.com";
+            String subject = crm.getTitle();
+            String body = crm.getDescription();
+            emailService.sendEmail(to, subject, body);
 
             return ResponseEntity.ok("Crm updated successfully");
         } else {
