@@ -57,6 +57,11 @@ public class CrmController {
         return crmRepo.findAllActiveCrms();
     }
 
+    @GetMapping(value = "/{id}")
+    public Crm getCrmById(@PathVariable long id) {
+        return crmRepo.findById(id).get();
+    }
+
     @PostMapping(value = "/create")
     public ResponseEntity<String> createCrm(@RequestBody CrmDto crmDto) {
 
@@ -87,7 +92,7 @@ public class CrmController {
             notificationService.createNotification(crm);
 
             // send mail
-            String to = "datletb789@gmail.com";
+            String to = "datdt56789@gmail.com";
             String subject = crm.getTitle();
             String body = crm.getDescription();
             emailService.sendEmail(to, subject, body);
