@@ -147,7 +147,7 @@ public class Crm {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     // @JsonBackReference
-    // @JsonIgnore
+    @JsonIgnore
     private User user;
 
     public User getUser() {
@@ -158,16 +158,15 @@ public class Crm {
         this.user = user;
     }
 
-    // @Transient
-    // public String getUserName() {
-    // return (user != null) ? user.getName() : null;
-    // }
+    @Transient
+    public String getName() {
+        return (user != null) ? user.getName() : null;
+    }
 
-    // @Transient
-    // public long getUserId() {
-    // return (user != null) ? user.getId() : null;
-
-    // }
+    @Transient
+    public String getUserName() {
+        return (user != null) ? user.getUsername() : null;
+    }
 
     @OneToMany(mappedBy = "Crm", cascade = CascadeType.ALL)
     @JsonBackReference
