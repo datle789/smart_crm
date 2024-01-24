@@ -145,7 +145,7 @@ public class User {
         this.crms = crms;
     }
 
-    @ManyToAny(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "User_Role", joinColumns = @JoinColumn(name = "Id"), inverseJoinColumns = @JoinColumn(name = "RoleID"))
     private Set<Roles> listRoles = new HashSet<>();
 

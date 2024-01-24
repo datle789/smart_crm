@@ -1,9 +1,12 @@
 package crm.demo.Security;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,12 +15,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import crm.demo.models.Crm;
 import crm.demo.models.User;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
 public class CustomUserDetail implements UserDetails {
+  private static final Logger logger = LoggerFactory.getLogger(CustomUserDetail.class);
+
   private long id;
   private String username;
   @JsonIgnore
@@ -34,10 +40,15 @@ public class CustomUserDetail implements UserDetails {
     return this.authorities;
   }
 
+  @Transactional
   public static CustomUserDetail mapUserToUserDetail(User users) {
-    List<GrantedAuthority> lAuthorities = users.getListRoles().stream()
+    logger.info("lAuthorities {}", new ArrayList<>(users.getListRoles()).stream()
+        .map(roles -> new SimpleGrantedAuthority(roles.getRoleName().name()))
+        .collect(Collectors.toList()));
+    List<GrantedAuthority> lAuthorities = new ArrayList<>(users.getListRoles()).stream()
         .map(roles -> new SimpleGrantedAuthority(roles.getRoleName().name()))
         .collect(Collectors.toList());
+
     return new CustomUserDetail(
         users.getId(),
         users.getUserName(),

@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +31,7 @@ import io.micrometer.common.util.StringUtils;
 
 import org.slf4j.Logger;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(path = "/api/crms")
 public class CrmController {
@@ -49,6 +52,7 @@ public class CrmController {
     ErrorUtil errorUtil = new ErrorUtil();
 
     @GetMapping(value = "/")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     public List<Crm> getCrm() {
         // return crmRepo.findAll();
         return crmRepo.findAllActiveCrms();

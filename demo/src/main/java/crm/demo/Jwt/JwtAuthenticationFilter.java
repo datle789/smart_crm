@@ -1,7 +1,8 @@
 package crm.demo.Jwt;
 
 import java.io.IOException;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,6 +12,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import crm.demo.Security.CustomUserDetailService;
+import crm.demo.controllers.TestController;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,6 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+  private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+
   @Autowired
   private JwtTokenProvider jwtTokenProvider;
   @Autowired
@@ -37,9 +41,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       throws ServletException, IOException {
     try {
       String jwt = getJwtFromRequest(request);
+      logger.info("jwt {}", jwt);
       if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
         String userName = jwtTokenProvider.getUserNameFromJwt(jwt);
+        logger.info("username {}", userName);
         UserDetails userDetails = customUserDetailService.loadUserByUsername(userName);
+        logger.info("userDeatail {}", userDetails);
         if (userDetails != null) {
           UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,
               null, userDetails.getAuthorities());
