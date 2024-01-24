@@ -4,14 +4,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import crm.demo.models.Crm;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 
 public class UserDto {
     private long id;
 
-    private String username;
+    private String userName;
 
     private String password;
 
@@ -33,12 +30,12 @@ public class UserDto {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String username) {
+        this.userName = username;
     }
 
     public String getPassword() {

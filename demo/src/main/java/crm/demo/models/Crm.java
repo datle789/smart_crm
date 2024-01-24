@@ -165,7 +165,7 @@ public class Crm {
 
     @Transient
     public String getUserName() {
-        return (user != null) ? user.getUsername() : null;
+        return (user != null) ? user.getUserName() : null;
     }
 
     @OneToMany(mappedBy = "Crm", cascade = CascadeType.ALL)
