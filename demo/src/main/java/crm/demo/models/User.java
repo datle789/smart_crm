@@ -108,7 +108,7 @@ public class User {
     }
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonBackReference
+    // @JsonBackReference
     private List<Crm> crms;
 
     public List<Crm> getCrms() {

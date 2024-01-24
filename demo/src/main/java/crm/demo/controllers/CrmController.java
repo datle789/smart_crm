@@ -67,50 +67,51 @@ public class CrmController {
         return crmRepo.findById(id).get();
     }
 
-    @PostMapping(value = "/create")
-    public ResponseEntity<Map<String, Object>> createCrm(@RequestBody CrmDto crmDto) {
-        try {
-            // check input
-            if (StringUtils.isEmpty(crmDto.getCustomerName()) ||
-                    crmDto.getPhoneNumber() == 0 ||
-                    StringUtils.isEmpty(crmDto.getTitle()) ||
-                    StringUtils.isEmpty(crmDto.getDescription()) ||
-                    crmDto.getStartDate() == null ||
-                    crmDto.getEndDate() == null) {
-                return errorUtil.badStatus("crm is not enough attribute");
-            }
+    // @PostMapping(value = "/create")
+    // public ResponseEntity<Map<String, Object>> createCrm(@RequestBody CrmDto
+    // crmDto) {
+    // try {
+    // // check input
+    // if (StringUtils.isEmpty(crmDto.getCustomerName()) ||
+    // crmDto.getPhoneNumber() == 0 ||
+    // StringUtils.isEmpty(crmDto.getTitle()) ||
+    // StringUtils.isEmpty(crmDto.getDescription()) ||
+    // crmDto.getStartDate() == null ||
+    // crmDto.getEndDate() == null) {
+    // return errorUtil.badStatus("crm is not enough attribute");
+    // }
 
-            Crm crm = new Crm();
-            User user = userRepo.findById(crmDto.getUserId()).orElse(null);
-            if (user != null) {
-                crm.setUser(user);
-                crm.setCustomerName(crmDto.getCustomerName());
-                crm.setPhoneNumber(crmDto.getPhoneNumber());
-                crm.setTitle(crmDto.getTitle());
-                crm.setDescription(crmDto.getDescription());
-                crm.setCrmFile(crmDto.getCrmFile());
-                crm.setStartDate(crmDto.getStartDate());
-                crm.setEndDate(crmDto.getEndDate());
-                crmRepo.save(crm);
+    // Crm crm = new Crm();
+    // User user = userRepo.findById(crmDto.getUserId()).orElse(null);
+    // if (user != null) {
+    // crm.setUser(user);
+    // crm.setCustomerName(crmDto.getCustomerName());
+    // crm.setPhoneNumber(crmDto.getPhoneNumber());
+    // crm.setTitle(crmDto.getTitle());
+    // crm.setDescription(crmDto.getDescription());
+    // crm.setCrmFile(crmDto.getCrmFile());
+    // crm.setStartDate(crmDto.getStartDate());
+    // crm.setEndDate(crmDto.getEndDate());
+    // crmRepo.save(crm);
 
-                // create notification
-                notificationService.createNotification(crm);
+    // // create notification
+    // notificationService.createNotification(crm);
 
-                // send mail
-                String to = "datdt56789@gmail.com";
-                String subject = crm.getTitle();
-                String body = crm.getDescription();
-                emailService.sendEmail(to, subject, body);
+    // // send mail
+    // String to = "datdt56789@gmail.com";
+    // String subject = crm.getTitle();
+    // String body = crm.getDescription();
+    // emailService.sendEmail(to, subject, body);
 
-                return errorUtil.goodStatus("Crm created successfully");
-            } else {
-                return errorUtil.badStatus("user id is invalid");
-            }
-        } catch (Exception e) {
-            return errorUtil.badStatus("crm is invalid");
-        }
+    // return errorUtil.goodStatus("Crm created successfully");
+    // } else {
+    // return errorUtil.badStatus("user id is invalid");
+    // }
+    // } catch (Exception e) {
+    // return errorUtil.badStatus("crm is invalid");
+    // }
 
-    }
+    // }
 
     @PutMapping(value = "/update/{id}")
     public ResponseEntity<Map<String, Object>> updateCrm(@PathVariable long id, @RequestBody CrmDto crmDto) {

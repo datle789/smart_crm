@@ -7,6 +7,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import crm.demo.Dto.NotificationDto;
@@ -146,6 +147,20 @@ public class Crm {
         return updatedAt;
     }
 
+    @OneToMany(mappedBy = "crm", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    // @JsonManagedReference
+    // @JsonBackReference
+    // @JsonIgnore
+    private List<Notification> notifications;
+
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
+    }
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     // @JsonBackReference
@@ -168,19 +183,6 @@ public class Crm {
     @Transient
     public String getUserName() {
         return (user != null) ? user.getUsername() : null;
-    }
-
-    @OneToMany(mappedBy = "Crm", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonBackReference
-    // @JsonIgnore
-    private List<Notification> notifications;
-
-    public List<Notification> getNotifications() {
-        return notifications;
-    }
-
-    public void setNotifications(List<Notification> notifications) {
-        this.notifications = notifications;
     }
 
 }
