@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import crm.demo.models.Crm;
 import crm.demo.models.Notification;
 import crm.demo.repo.NotificationRepo;
 

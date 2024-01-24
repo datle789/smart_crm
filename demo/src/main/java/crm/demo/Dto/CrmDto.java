@@ -6,14 +6,9 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
-import crm.demo.models.Crm;
 import crm.demo.models.Notification;
 import crm.demo.models.User;
 import crm.demo.utils.ErrorUtil;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.TemporalType;
 
 public class CrmDto {
     private long id;

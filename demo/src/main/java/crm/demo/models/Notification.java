@@ -2,10 +2,13 @@ package crm.demo.models;
 
 import java.time.LocalDateTime;
 
+<<<<<<< HEAD
+=======
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+>>>>>>> a92b9aa7947866c786ae9b0e9e12153d5dba309c
 import jakarta.persistence.*;
 
 @Entity
