@@ -1,6 +1,8 @@
 package crm.demo.controllers;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import crm.demo.repo.CrmRepo;
 import crm.demo.repo.UserRepo;
 import crm.demo.services.NotificationService;
 import crm.demo.services.SendMailService;
+import crm.demo.utils.ErrorUtil;
 import io.micrometer.common.util.StringUtils;
 
 import org.slf4j.Logger;
@@ -43,6 +46,8 @@ public class CrmController {
 
     private static final Logger logger = LoggerFactory.getLogger(CrmController.class);
 
+    ErrorUtil errorUtil = new ErrorUtil();
+
     @GetMapping(value = "/")
     public List<Crm> getCrm() {
         // return crmRepo.findAll();
@@ -55,101 +60,105 @@ public class CrmController {
     }
 
     @PostMapping(value = "/create")
-    public ResponseEntity<String> createCrm(@RequestBody CrmDto crmDto) {
+    public ResponseEntity<Map<String, Object>> createCrm(@RequestBody CrmDto crmDto) {
+        try {
+            // check input
+            if (StringUtils.isEmpty(crmDto.getCustomerName()) ||
+                    crmDto.getPhoneNumber() == 0 ||
+                    StringUtils.isEmpty(crmDto.getTitle()) ||
+                    StringUtils.isEmpty(crmDto.getDescription()) ||
+                    crmDto.getStartDate() == null ||
+                    crmDto.getEndDate() == null) {
+                return errorUtil.badStatus("crm is not enough attribute");
+            }
 
-        // check input
-        if (StringUtils.isEmpty(crmDto.getCustomerName()) ||
-                crmDto.getPhoneNumber() == 0 ||
-                StringUtils.isEmpty(crmDto.getTitle()) ||
-                StringUtils.isEmpty(crmDto.getDescription()) ||
-                crmDto.getStartDate() == null ||
-                crmDto.getEndDate() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Missing required fields");
-        }
+            Crm crm = new Crm();
+            User user = userRepo.findById(crmDto.getUserId()).orElse(null);
+            if (user != null) {
+                crm.setUser(user);
+                crm.setCustomerName(crmDto.getCustomerName());
+                crm.setPhoneNumber(crmDto.getPhoneNumber());
+                crm.setTitle(crmDto.getTitle());
+                crm.setDescription(crmDto.getDescription());
+                crm.setCrmFile(crmDto.getCrmFile());
+                crm.setStartDate(crmDto.getStartDate());
+                crm.setEndDate(crmDto.getEndDate());
+                crmRepo.save(crm);
 
-        Crm crm = new Crm();
-        User user = userRepo.findById(crmDto.getUserId()).orElse(null);
-        if (user != null) {
-            crm.setUser(user);
-            crm.setCustomerName(crmDto.getCustomerName());
-            crm.setPhoneNumber(crmDto.getPhoneNumber());
-            crm.setTitle(crmDto.getTitle());
-            crm.setDescription(crmDto.getDescription());
-            crm.setCrmFile(crmDto.getCrmFile());
-            crm.setStartDate(crmDto.getStartDate());
-            crm.setEndDate(crmDto.getEndDate());
-            crmRepo.save(crm);
+                // create notification
+                notificationService.createNotification(crm);
 
-            // create notification
-            notificationService.createNotification(crm);
+                // send mail
+                String to = "datdt56789@gmail.com";
+                String subject = crm.getTitle();
+                String body = crm.getDescription();
+                emailService.sendEmail(to, subject, body);
 
-            // send mail
-            String to = "datdt56789@gmail.com";
-            String subject = crm.getTitle();
-            String body = crm.getDescription();
-            emailService.sendEmail(to, subject, body);
-
-            return ResponseEntity.ok("Crm created successfully");
-        } else {
-            logger.info("Log message: id không tồn tại");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with specified id not found");
+                return errorUtil.goodStatus("Crm created successfully");
+            } else {
+                return errorUtil.badStatus("user id is invalid");
+            }
+        } catch (Exception e) {
+            return errorUtil.badStatus("crm is invalid");
         }
 
     }
 
     @PutMapping(value = "/update/{id}")
-    public ResponseEntity<String> updateCrm(@PathVariable long id, @RequestBody CrmDto crmDto) {
+    public ResponseEntity<Map<String, Object>> updateCrm(@PathVariable long id, @RequestBody CrmDto crmDto) {
+        try {
+            // check input
+            if (StringUtils.isEmpty(crmDto.getCustomerName()) ||
+                    crmDto.getPhoneNumber() == 0 ||
+                    StringUtils.isEmpty(crmDto.getTitle()) ||
+                    StringUtils.isEmpty(crmDto.getDescription()) ||
+                    crmDto.getStartDate() == null ||
+                    crmDto.getEndDate() == null) {
+                return errorUtil.badStatus("crm is not enough attribute");
+            }
 
-        // check input
-        if (StringUtils.isEmpty(crmDto.getCustomerName()) ||
-                crmDto.getPhoneNumber() == 0 ||
-                StringUtils.isEmpty(crmDto.getTitle()) ||
-                StringUtils.isEmpty(crmDto.getDescription()) ||
-                crmDto.getStartDate() == null ||
-                crmDto.getEndDate() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Missing required fields");
-        }
+            Crm crm = crmRepo.findById(id).orElse(null);
+            if (crm != null) {
+                // Update CRM
+                crm.setCustomerName(crmDto.getCustomerName());
+                crm.setPhoneNumber(crmDto.getPhoneNumber());
+                crm.setTitle(crmDto.getTitle());
+                crm.setDescription(crmDto.getDescription());
+                crm.setCrmFile(crmDto.getCrmFile());
+                crm.setStartDate(crmDto.getStartDate());
+                crm.setEndDate(crmDto.getEndDate());
+                crmRepo.save(crm);
 
-        Crm crm = crmRepo.findById(id).orElse(null);
-        if (crm != null) {
-            // Update CRM
-            crm.setCustomerName(crmDto.getCustomerName());
-            crm.setPhoneNumber(crmDto.getPhoneNumber());
-            crm.setTitle(crmDto.getTitle());
-            crm.setDescription(crmDto.getDescription());
-            crm.setCrmFile(crmDto.getCrmFile());
-            crm.setStartDate(crmDto.getStartDate());
-            crm.setEndDate(crmDto.getEndDate());
-            crmRepo.save(crm);
+                // Create Notification
+                notificationService.createNotification(crm);
 
-            // Create Notification
-            notificationService.createNotification(crm);
+                // Send Mail
+                String to = "datletb789@gmail.com";
+                String subject = crm.getTitle();
+                String body = crm.getDescription();
+                emailService.sendEmail(to, subject, body);
 
-            // Send Mail
-            String to = "datletb789@gmail.com";
-            String subject = crm.getTitle();
-            String body = crm.getDescription();
-            emailService.sendEmail(to, subject, body);
-
-            return ResponseEntity.ok("Crm updated successfully");
-        } else {
-            logger.info("Log message: crm không tồn tại");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("crm with specified id not found");
+                return errorUtil.goodStatus("Crm updated successfully");
+            } else {
+                return errorUtil.badStatus("crm with specified id not found");
+            }
+        } catch (Exception e) {
+            return errorUtil.badStatus("crm is invalid");
         }
 
     }
 
     @DeleteMapping(value = "/delete/{id}")
-    public ResponseEntity<String> deleteCrm(@PathVariable long id) {
+    public ResponseEntity<Map<String, Object>> deleteCrm(@PathVariable long id) {
+
         Crm crm = crmRepo.findById(id).orElse(null);
         if (crm != null) {
             crm.setStatus(0);
             crmRepo.save(crm);
-
-            return ResponseEntity.ok("Crm deleted successfully");
+            return errorUtil.goodStatus("Crm deleted successfully");
         } else {
-            logger.info("Log message: crm không tồn tại");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("crm with specified id not found");
+
+            return errorUtil.badStatus("crm with specified id not found");
         }
 
     }
