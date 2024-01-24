@@ -3,10 +3,6 @@ package crm.demo.Dto;
 import java.time.LocalDateTime;
 
 import crm.demo.models.Crm;
-import crm.demo.models.User;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 
 public class NotificationDto {
     private long id;

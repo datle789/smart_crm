@@ -1,7 +1,5 @@
 package crm.demo.controllers;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,7 +32,7 @@ import crm.demo.services.UserService;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/auth")
 public class UserController {
   @Autowired
   private AuthenticationManager authenticationManager;

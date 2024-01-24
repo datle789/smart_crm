@@ -49,8 +49,8 @@ public class WebSecurityConfig {
     http
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> {
-          auth.requestMatchers("/api/v1/auth/**").permitAll()
-              .requestMatchers("api/v1/test/**").permitAll()
+          auth.requestMatchers("/api/auth/**").permitAll()
+              .requestMatchers("api/test/**").permitAll()
               .anyRequest().authenticated();
         })
         .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
