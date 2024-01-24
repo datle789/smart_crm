@@ -20,7 +20,7 @@ public class CrmDto {
 
     private String customerName;
 
-    private static final String PHONE_NUMBER_PATTERN = "\\d{10,12}";
+    private static final String PHONE_NUMBER_PATTERN = "^(\\+[0-9]{1,4})?([-\\s./0-9])?([0-9]+)$";
 
     ErrorUtil errorUtil = new ErrorUtil();
 

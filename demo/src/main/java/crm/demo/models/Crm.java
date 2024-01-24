@@ -7,7 +7,9 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import crm.demo.Dto.NotificationDto;
 import jakarta.persistence.*;
 
 @Entity
@@ -168,7 +170,7 @@ public class Crm {
         return (user != null) ? user.getUsername() : null;
     }
 
-    @OneToMany(mappedBy = "Crm", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "Crm", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonBackReference
     // @JsonIgnore
     private List<Notification> notifications;
