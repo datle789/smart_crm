@@ -1,7 +1,11 @@
 package crm.demo.models;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import org.hibernate.annotations.ManyToAny;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -17,10 +21,10 @@ public class User {
     @Column(name = "id")
     private long id;
 
-    @Column
-    private String username;
+    @Column(name = "username", nullable = false)
+    private String userName;
 
-    @Column
+    @Column(name = "password", nullable = false)
     private String password;
 
     @Column
@@ -28,6 +32,12 @@ public class User {
 
     @Column
     private String avatar;
+
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
+
+    @Column(name = "phone")
+    private String phone;
 
     private int status;
 
@@ -49,12 +59,12 @@ public class User {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPassword() {
@@ -79,6 +89,22 @@ public class User {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public int getStatus() {
@@ -117,6 +143,18 @@ public class User {
 
     public void setCrms(List<Crm> crms) {
         this.crms = crms;
+    }
+
+    @ManyToAny(fetch = FetchType.LAZY)
+    @JoinTable(name = "User_Role", joinColumns = @JoinColumn(name = "Id"), inverseJoinColumns = @JoinColumn(name = "RoleID"))
+    private Set<Roles> listRoles = new HashSet<>();
+
+    public Set<Roles> getListRoles() {
+        return listRoles;
+    }
+
+    public void setListRoles(Set<Roles> listRoles) {
+        this.listRoles = listRoles;
     }
 
 }
