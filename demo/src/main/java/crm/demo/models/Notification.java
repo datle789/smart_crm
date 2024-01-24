@@ -4,14 +4,11 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "notifications")
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -90,7 +87,6 @@ public class Notification {
     @JoinColumn(name = "crm_id", referencedColumnName = "id")
     @JsonBackReference
     // @JsonIgnore
-    // @JsonManagedReference
     private Crm crm;
 
     public Crm getCrm() {
@@ -99,6 +95,11 @@ public class Notification {
 
     public void setCrm(Crm crm) {
         this.crm = crm;
+    }
+
+    @Transient
+    public String getCusmerName() {
+        return (crm != null) ? crm.getCustomerName() : null;
     }
 
 }
