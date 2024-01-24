@@ -3,10 +3,13 @@ package crm.demo.Dto;
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import crm.demo.models.Crm;
 import crm.demo.models.Notification;
 import crm.demo.models.User;
+import crm.demo.utils.ErrorUtil;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,6 +19,10 @@ public class CrmDto {
     private long id;
 
     private String customerName;
+
+    private static final String PHONE_NUMBER_PATTERN = "\\d{10,12}";
+
+    ErrorUtil errorUtil = new ErrorUtil();
 
     private long phoneNumber;
 
@@ -76,7 +83,20 @@ public class CrmDto {
     }
 
     public void setPhoneNumber(long phoneNumber) {
-        this.phoneNumber = phoneNumber;
+        // Kiểm tra định dạng số điện thoại trước khi gán giá trị
+        if (isValidPhoneNumber(phoneNumber)) {
+            this.phoneNumber = phoneNumber;
+        } else {
+            throw new IllegalArgumentException("Invalid phone number format");
+        }
+    }
+
+    // Kiểm tra định dạng số điện thoại bằng regex
+    private boolean isValidPhoneNumber(long phoneNumber) {
+        String phoneNumberStr = String.valueOf(phoneNumber);
+        Pattern pattern = Pattern.compile(PHONE_NUMBER_PATTERN);
+        Matcher matcher = pattern.matcher(phoneNumberStr);
+        return matcher.matches();
     }
 
     public String getTitle() {

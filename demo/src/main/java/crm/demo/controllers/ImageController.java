@@ -1,7 +1,9 @@
 package crm.demo.controllers;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,9 +27,19 @@ public class ImageController {
 
     @PostMapping
     public ResponseEntity<?> uploadImage(@RequestParam("image") List<MultipartFile> files) throws IOException {
-        List<String> uploadImage = ImageService.uploadImages(files);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(uploadImage);
+        Map<String, Object> response = new HashMap<>();
+        try {
+            List<String> uploadImage = ImageService.uploadImages(files);
+            response.put("status", HttpStatus.OK.value());
+            response.put("message", uploadImage);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("status", HttpStatus.BAD_REQUEST.value());
+            response.put("message", "image already exists");
+            return ResponseEntity.badRequest().body(response);
+        }
+
     }
 
     @GetMapping("/{fileName}")
