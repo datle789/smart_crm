@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import crm.demo.Dto.CrmDto;
 import crm.demo.Payload.Response.JwtResponse;
+import crm.demo.Security.CustomUserDetail;
 import crm.demo.models.Crm;
 import crm.demo.models.User;
 import crm.demo.repo.CrmRepo;
@@ -28,8 +32,12 @@ import crm.demo.repo.UserRepo;
 import crm.demo.services.NotificationService;
 import crm.demo.services.SendMailService;
 import crm.demo.utils.ErrorUtil;
+import io.jsonwebtoken.Claims;
+import java.util.Collections;
 import io.micrometer.common.util.StringUtils;
 
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.slf4j.Logger;
 
 @CrossOrigin(origins = "*")
@@ -48,19 +56,26 @@ public class CrmController {
     @Autowired
     private NotificationService notificationService;
 
-    @Autowired
-    private JwtResponse jwtResponse;
-
     private static final Logger logger = LoggerFactory.getLogger(CrmController.class);
 
     ErrorUtil errorUtil = new ErrorUtil();
 
     @GetMapping(value = "/")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
-    public List<Crm> getCrm() {
-        // JwtResponse jwtResponse = new JwtResponse();
-        logger.info("get id ---> {}", jwtResponse);
-        return crmRepo.findAllActiveCrms();
+    public List<Crm> getCrm(@AuthenticationPrincipal UserDetails userDetails) {
+
+        if (userDetails != null) {
+
+            // Sử dụng thông tin người dùng theo nhu cầu của bạn
+            // Ví dụ: lấy ID nếu UserDetails là CustomUserDetails
+            if (userDetails instanceof CustomUserDetail) {
+                CustomUserDetail customUserDetails = (CustomUserDetail) userDetails;
+                Long userId = customUserDetails.getId();
+                return crmRepo.findAllActiveCrms(userId);
+            }
+        }
+
+        return Collections.emptyList();
     }
 
     @GetMapping(value = "/admin")
