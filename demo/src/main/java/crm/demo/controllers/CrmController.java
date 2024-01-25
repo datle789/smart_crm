@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import crm.demo.Dto.CrmDto;
@@ -33,6 +35,8 @@ import crm.demo.services.NotificationService;
 import crm.demo.services.SendMailService;
 import crm.demo.utils.ErrorUtil;
 import io.jsonwebtoken.Claims;
+
+import java.time.LocalDate;
 import java.util.Collections;
 import io.micrometer.common.util.StringUtils;
 
@@ -80,8 +84,11 @@ public class CrmController {
 
     @GetMapping(value = "/admin")
     @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
-    public List<Crm> getAdminCrm() {
-        return crmRepo.findAll();
+    public List<Crm> getAdminCrm(
+            @RequestParam(name = "userId", required = false) Long selectedUserId,
+            @RequestParam(name = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate selectedStartDate,
+            @RequestParam(name = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate selectedEndDate) {
+        return crmRepo.filterCrms(selectedUserId, selectedStartDate, selectedEndDate);
     }
 
     @GetMapping(value = "/{id}")
