@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import crm.demo.Dto.CrmDto;
+import crm.demo.Payload.Response.JwtResponse;
 import crm.demo.models.Crm;
 import crm.demo.models.User;
 import crm.demo.repo.CrmRepo;
@@ -47,6 +48,9 @@ public class CrmController {
     @Autowired
     private NotificationService notificationService;
 
+    @Autowired
+    private JwtResponse jwtResponse;
+
     private static final Logger logger = LoggerFactory.getLogger(CrmController.class);
 
     ErrorUtil errorUtil = new ErrorUtil();
@@ -54,6 +58,8 @@ public class CrmController {
     @GetMapping(value = "/")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
     public List<Crm> getCrm() {
+        // JwtResponse jwtResponse = new JwtResponse();
+        logger.info("get id ---> {}", jwtResponse);
         return crmRepo.findAllActiveCrms();
     }
 
