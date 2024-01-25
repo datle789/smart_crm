@@ -57,7 +57,7 @@ public class CrmController {
         return crmRepo.findAllActiveCrms();
     }
 
-    @GetMapping(value = "/admin/")
+    @GetMapping(value = "/admin")
     @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     public List<Crm> getAdminCrm() {
         return crmRepo.findAll();
