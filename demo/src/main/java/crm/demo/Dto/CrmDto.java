@@ -82,7 +82,7 @@ public class CrmDto {
         if (isValidPhoneNumber(phoneNumber)) {
             this.phoneNumber = phoneNumber;
         } else {
-            throw new IllegalArgumentException("Invalid phone number format");
+            this.phoneNumber = 0;
         }
     }
 
@@ -107,7 +107,11 @@ public class CrmDto {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        if (description != null && description.length() >= 100) {
+            this.description = description;
+        } else {
+            this.description = null;
+        }
     }
 
     public String getCrmFile() {
