@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,12 +21,13 @@ import org.springframework.web.multipart.MultipartFile;
 import crm.demo.services.ImageService;
 
 @RestController
-@RequestMapping(path = "/api/image")
+@RequestMapping("/api/image")
 public class ImageController {
     @Autowired
     private ImageService ImageService;
 
     @PostMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
     public ResponseEntity<?> uploadImage(@RequestParam("image") List<MultipartFile> files) throws IOException {
         Map<String, Object> response = new HashMap<>();
         try {

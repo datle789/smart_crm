@@ -26,12 +26,9 @@ public class CustomUserDetailService implements UserDetailsService {
       if (user == null) {
         throw new UsernameNotFoundException("User not found with username: " + username);
       }
-
       UserDetails userDetails = CustomUserDetail.mapUserToUserDetail(user);
-      ;
       return userDetails;
     } catch (Exception e) {
-      // Log error
       logger.error("Error loading user details for username: " + username, e);
       throw new UsernameNotFoundException("Error loading user details", e);
     }

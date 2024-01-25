@@ -52,18 +52,20 @@ public class CrmController {
     ErrorUtil errorUtil = new ErrorUtil();
 
     @GetMapping(value = "/")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
     public List<Crm> getCrm() {
         // return crmRepo.findAll();
         return crmRepo.findAllActiveCrms();
     }
 
     @GetMapping(value = "/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
     public Crm getCrmById(@PathVariable long id) {
         return crmRepo.findById(id).get();
     }
 
     @PostMapping(value = "/create")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
     public ResponseEntity<Map<String, Object>> createCrm(@RequestBody CrmDto crmDto) {
         try {
             // check input
@@ -109,6 +111,7 @@ public class CrmController {
     }
 
     @PutMapping(value = "/update/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
     public ResponseEntity<Map<String, Object>> updateCrm(@PathVariable long id, @RequestBody CrmDto crmDto) {
         try {
             // check input
@@ -153,6 +156,7 @@ public class CrmController {
     }
 
     @DeleteMapping(value = "/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     public ResponseEntity<Map<String, Object>> deleteCrm(@PathVariable long id) {
 
         Crm crm = crmRepo.findById(id).orElse(null);
