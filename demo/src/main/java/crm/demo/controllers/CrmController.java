@@ -74,13 +74,21 @@ public class CrmController {
     public ResponseEntity<Map<String, Object>> createCrm(@RequestBody CrmDto crmDto) {
         try {
             // check input
-            if (StringUtils.isEmpty(crmDto.getCustomerName()) ||
-                    crmDto.getPhoneNumber() == 0 ||
-                    StringUtils.isEmpty(crmDto.getTitle()) ||
-                    StringUtils.isEmpty(crmDto.getDescription()) ||
-                    crmDto.getStartDate() == null ||
-                    crmDto.getEndDate() == null) {
-                return errorUtil.badStatus("crm is not enough attribute");
+            // if (StringUtils.isEmpty(crmDto.getCustomerName()) ||
+            // crmDto.getPhoneNumber() == 0 ||
+            // StringUtils.isEmpty(crmDto.getTitle()) ||
+            // StringUtils.isEmpty(crmDto.getDescription()) ||
+            // crmDto.getStartDate() == null ||
+            // crmDto.getEndDate() == null) {
+            // return errorUtil.badStatus("crm is not enough attribute");
+            // }
+
+            if (crmDto.getPhoneNumber() == 0) {
+                return errorUtil.badStatus("Số điện thoại không phù hợp với định dạng");
+            }
+
+            if (StringUtils.isEmpty(crmDto.getDescription())) {
+                return errorUtil.badStatus("Mô tả phải nhiều hơn hoặc bằng 100 kí tự");
             }
 
             Crm crm = new Crm();
@@ -120,13 +128,21 @@ public class CrmController {
     public ResponseEntity<Map<String, Object>> updateCrm(@PathVariable long id, @RequestBody CrmDto crmDto) {
         try {
             // check input
-            if (StringUtils.isEmpty(crmDto.getCustomerName()) ||
-                    crmDto.getPhoneNumber() == 0 ||
-                    StringUtils.isEmpty(crmDto.getTitle()) ||
-                    StringUtils.isEmpty(crmDto.getDescription()) ||
-                    crmDto.getStartDate() == null ||
-                    crmDto.getEndDate() == null) {
-                return errorUtil.badStatus("crm is not enough attribute");
+            // if (StringUtils.isEmpty(crmDto.getCustomerName()) ||
+            // crmDto.getPhoneNumber() == 0 ||
+            // StringUtils.isEmpty(crmDto.getTitle()) ||
+            // StringUtils.isEmpty(crmDto.getDescription()) ||
+            // crmDto.getStartDate() == null ||
+            // crmDto.getEndDate() == null) {
+            // return errorUtil.badStatus("crm is not enough attribute");
+            // }
+
+            if (crmDto.getPhoneNumber() == 0) {
+                return errorUtil.badStatus("Số điện thoại không phù hợp với định dạng");
+            }
+
+            if (StringUtils.isEmpty(crmDto.getDescription())) {
+                return errorUtil.badStatus("Mô tả phải nhiều hơn hoặc bằng 100 kí tự");
             }
 
             Crm crm = crmRepo.findById(id).orElse(null);
