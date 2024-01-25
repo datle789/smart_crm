@@ -52,7 +52,7 @@ public class WebSecurityConfig {
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> {
           auth.requestMatchers("/api/auth/**").permitAll()
-              .requestMatchers("/api/test/**").permitAll()
+              .requestMatchers("/api/crms/**").permitAll()
               .anyRequest().authenticated();
         })
         .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

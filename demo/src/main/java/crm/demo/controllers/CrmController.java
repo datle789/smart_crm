@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping(path = "/api/crms")
+@RequestMapping("/api/crms")
 public class CrmController {
     @Autowired
     private CrmRepo crmRepo;
@@ -52,7 +52,7 @@ public class CrmController {
     ErrorUtil errorUtil = new ErrorUtil();
 
     @GetMapping(value = "/")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
+    @PreAuthorize("hasRole('USER')")
     public List<Crm> getCrm() {
         // return crmRepo.findAll();
         return crmRepo.findAllActiveCrms();

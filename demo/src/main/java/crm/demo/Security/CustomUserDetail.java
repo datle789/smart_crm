@@ -42,9 +42,6 @@ public class CustomUserDetail implements UserDetails {
 
   @Transactional
   public static CustomUserDetail mapUserToUserDetail(User users) {
-    logger.info("lAuthorities {}", new ArrayList<>(users.getListRoles()).stream()
-        .map(roles -> new SimpleGrantedAuthority(roles.getRoleName().name()))
-        .collect(Collectors.toList()));
     List<GrantedAuthority> lAuthorities = new ArrayList<>(users.getListRoles()).stream()
         .map(roles -> new SimpleGrantedAuthority(roles.getRoleName().name()))
         .collect(Collectors.toList());

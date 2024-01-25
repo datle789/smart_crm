@@ -45,55 +45,51 @@ public class UserController {
   @Autowired
   private PasswordEncoder passwordEncoder;
 
-  // @PostMapping("/signup")
-  // public ResponseEntity<?> registerUser(@RequestBody SignupRequest
-  // signupRequest) {
-  // if (userService.existByUserName(signupRequest.getUsername())) {
-  // return ResponseEntity.badRequest().body(new MessageResponse("Error : Username
-  // is already"));
-  // }
-  // if (userService.existByEmail(signupRequest.getEmail())) {
-  // return ResponseEntity.badRequest().body(new MessageResponse("Error : Email is
-  // already"));
-  // }
+  @PostMapping("/signup")
+  public ResponseEntity<?> registerUser(@RequestBody SignupRequest signupRequest) {
+    if (userService.existByUserName(signupRequest.getUsername())) {
+      return ResponseEntity.badRequest().body(new MessageResponse("Error : Username is already"));
+    }
+    if (userService.existByEmail(signupRequest.getEmail())) {
+      return ResponseEntity.badRequest().body(new MessageResponse("Error : Email is already"));
+    }
 
-  // User users = new User();
-  // users.setUserName(signupRequest.getUsername());
-  // users.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
-  // users.setEmail(signupRequest.getEmail());
-  // users.setName(signupRequest.getName());
-  // users.setPhone(signupRequest.getPhone());
-  // users.setStatus(1);
-  // users.setCreatedAt();
-  // Set<String> strRoles = signupRequest.getListRoles();
-  // Set<Roles> listRoles = new HashSet<>();
-  // if (strRoles == null) {
-  // Roles userRoles = roleService.findByRoleName(Erole.ROLE_USER)
-  // .orElseThrow(() -> new RuntimeException("Error : Role is not found"));
-  // listRoles.add(userRoles);
-  // } else {
-  // strRoles.forEach(role -> {
-  // switch (role) {
-  // case "admin":
-  // Roles adminRoles = roleService.findByRoleName(Erole.ROLE_ADMIN)
-  // .orElseThrow(() -> new RuntimeException("Error : Role is not found"));
-  // listRoles.add(adminRoles);
-  // case "moderator":
-  // Roles modRoles = roleService.findByRoleName(Erole.ROLE_MODERATOR)
-  // .orElseThrow(() -> new RuntimeException("Error : Role is not found"));
-  // listRoles.add(modRoles);
-  // case "user":
-  // Roles userRoles = roleService.findByRoleName(Erole.ROLE_USER)
-  // .orElseThrow(() -> new RuntimeException("Error : Role is not found"));
-  // listRoles.add(userRoles);
-  // }
-  // });
-  // }
-  // users.setListRoles(listRoles);
-  // userService.saveOrUpdate(users);
-  // return ResponseEntity.ok(new MessageResponse("User registered
-  // successfully"));
-  // }
+    User users = new User();
+    users.setUserName(signupRequest.getUsername());
+    users.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
+    users.setEmail(signupRequest.getEmail());
+    users.setName(signupRequest.getName());
+    users.setPhone(signupRequest.getPhone());
+    users.setStatus(1);
+    users.setCreatedAt();
+    Set<String> strRoles = signupRequest.getListRoles();
+    Set<Roles> listRoles = new HashSet<>();
+    if (strRoles == null) {
+      Roles userRoles = roleService.findByRoleName(Erole.ROLE_USER)
+          .orElseThrow(() -> new RuntimeException("Error : Role is not found"));
+      listRoles.add(userRoles);
+    } else {
+      strRoles.forEach(role -> {
+        switch (role) {
+          case "admin":
+            Roles adminRoles = roleService.findByRoleName(Erole.ROLE_ADMIN)
+                .orElseThrow(() -> new RuntimeException("Error : Role is not found"));
+            listRoles.add(adminRoles);
+          case "moderator":
+            Roles modRoles = roleService.findByRoleName(Erole.ROLE_MODERATOR)
+                .orElseThrow(() -> new RuntimeException("Error : Role is not found"));
+            listRoles.add(modRoles);
+          case "user":
+            Roles userRoles = roleService.findByRoleName(Erole.ROLE_USER)
+                .orElseThrow(() -> new RuntimeException("Error : Role is not found"));
+            listRoles.add(userRoles);
+        }
+      });
+    }
+    users.setListRoles(listRoles);
+    userService.saveOrUpdate(users);
+    return ResponseEntity.ok(new MessageResponse("User registered successfully"));
+  }
 
   @PostMapping("/signin")
   public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {

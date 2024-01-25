@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import crm.demo.Jwt.JwtAuthenticationFilter;
 import crm.demo.models.User;
 import crm.demo.repo.UserRepo;
 
@@ -24,14 +23,12 @@ public class CustomUserDetailService implements UserDetailsService {
     try {
 
       User user = userRepo.findByUserName(username);
-      logger.info("UserRepo {}", user);
       if (user == null) {
         throw new UsernameNotFoundException("User not found with username: " + username);
       }
 
       UserDetails userDetails = CustomUserDetail.mapUserToUserDetail(user);
-      // Log success
-      logger.info("userDetails: {}", userDetails);
+      ;
       return userDetails;
     } catch (Exception e) {
       // Log error
