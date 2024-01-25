@@ -174,6 +174,11 @@ public class Crm {
     }
 
     @Transient
+    public long getUserId() {
+        return (user != null) ? user.getId() : null;
+    }
+
+    @Transient
     public String getName() {
         return (user != null) ? user.getName() : null;
     }
