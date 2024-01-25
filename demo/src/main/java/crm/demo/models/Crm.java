@@ -146,6 +146,19 @@ public class Crm {
         return updatedAt;
     }
 
+    @OneToMany(mappedBy = "crm", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    // @JsonBackReference
+    // @JsonIgnore
+    private List<Notification> notifications;
+
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
+    }
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     // @JsonBackReference
@@ -168,19 +181,6 @@ public class Crm {
     @Transient
     public String getUserName() {
         return (user != null) ? user.getUserName() : null;
-    }
-
-    @OneToMany(mappedBy = "Crm", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonBackReference
-    // @JsonIgnore
-    private List<Notification> notifications;
-
-    public List<Notification> getNotifications() {
-        return notifications;
-    }
-
-    public void setNotifications(List<Notification> notifications) {
-        this.notifications = notifications;
     }
 
 }

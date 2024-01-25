@@ -2,6 +2,9 @@ package crm.demo.models;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -82,16 +85,16 @@ public class Notification {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "crm_id", referencedColumnName = "id")
-    // @JsonBackReference
+    @JsonBackReference
     // @JsonIgnore
-    private Crm Crm;
+    private Crm crm;
 
     public Crm getCrm() {
-        return Crm;
+        return crm;
     }
 
     public void setCrm(Crm crm) {
-        Crm = crm;
+        this.crm = crm;
     }
 
 }
