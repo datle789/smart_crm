@@ -54,8 +54,13 @@ public class CrmController {
     @GetMapping(value = "/")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
     public List<Crm> getCrm() {
-        // return crmRepo.findAll();
         return crmRepo.findAllActiveCrms();
+    }
+
+    @GetMapping(value = "/admin/")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
+    public List<Crm> getAdminCrm() {
+        return crmRepo.findAll();
     }
 
     @GetMapping(value = "/{id}")
