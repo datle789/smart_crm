@@ -18,9 +18,11 @@ import crm.demo.models.User;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.ToString;
 
 @Data
 @AllArgsConstructor
+@ToString
 public class CustomUserDetail implements UserDetails {
   private static final Logger logger = LoggerFactory.getLogger(CustomUserDetail.class);
 
@@ -45,20 +47,21 @@ public class CustomUserDetail implements UserDetails {
     logger.info("lAuthorities {}", new ArrayList<>(users.getListRoles()).stream()
         .map(roles -> new SimpleGrantedAuthority(roles.getRoleName().name()))
         .collect(Collectors.toList()));
+
+    logger.info("lAuthorities------>");
     List<GrantedAuthority> lAuthorities = new ArrayList<>(users.getListRoles()).stream()
         .map(roles -> new SimpleGrantedAuthority(roles.getRoleName().name()))
         .collect(Collectors.toList());
 
-    return new CustomUserDetail(
-        users.getId(),
+    CustomUserDetail customUserDetail = new CustomUserDetail(users.getId(),
         users.getUserName(),
         users.getPassword(),
         users.getEmail(),
         users.getName(),
         users.getPhone(),
         users.getStatus(),
-        users.getCrms(),
-        lAuthorities);
+        users.getCrms(), lAuthorities);
+    return customUserDetail;
   }
 
   @Override

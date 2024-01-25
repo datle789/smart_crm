@@ -31,7 +31,7 @@ public class CustomUserDetailService implements UserDetailsService {
 
       UserDetails userDetails = CustomUserDetail.mapUserToUserDetail(user);
       // Log success
-      logger.info("userDetails: {}", userDetails);
+      // logger.info("userDetails: {}", userDetails);
       return userDetails;
     } catch (Exception e) {
       // Log error
