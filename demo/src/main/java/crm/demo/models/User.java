@@ -145,15 +145,29 @@ public class User {
         this.crms = crms;
     }
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "User_Role", joinColumns = @JoinColumn(name = "Id"), inverseJoinColumns = @JoinColumn(name = "RoleID"))
-    private Set<Roles> listRoles = new HashSet<>();
+    // @ManyToMany(fetch = FetchType.EAGER)
+    // @JoinTable(name = "User_Role", joinColumns = @JoinColumn(name = "Id"),
+    // inverseJoinColumns = @JoinColumn(name = "RoleID"))
+    // private Set<Roles> listRoles = new HashSet<>();
 
-    public Set<Roles> getListRoles() {
+    // public Set<Roles> getListRoles() {
+    // return listRoles;
+    // }
+
+    // public void setListRoles(Set<Roles> listRoles) {
+    // this.listRoles = listRoles;
+    // }
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    // @JsonBackReference
+    // @JsonIgnore
+    private Set<UserRole> listRoles = new HashSet<>();
+
+    public Set<UserRole> getListRoles() {
         return listRoles;
     }
 
-    public void setListRoles(Set<Roles> listRoles) {
+    public void setListRoles(Set<UserRole> listRoles) {
         this.listRoles = listRoles;
     }
 
