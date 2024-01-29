@@ -1,23 +1,35 @@
 package crm.demo.controllers;
 
+import java.lang.module.Configuration;
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.management.relation.Role;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import crm.demo.Dto.UserDto;
 import crm.demo.Jwt.JwtTokenProvider;
 import crm.demo.Payload.Request.LoginRequest;
 import crm.demo.Payload.Request.SignupRequest;
@@ -27,8 +39,15 @@ import crm.demo.Security.CustomUserDetail;
 import crm.demo.models.Erole;
 import crm.demo.models.Roles;
 import crm.demo.models.User;
+import crm.demo.models.UserRole;
+import crm.demo.repo.UserRepo;
+import crm.demo.repo.UserRoleRepo;
 import crm.demo.services.RoleService;
+import crm.demo.services.UserAdminService;
 import crm.demo.services.UserService;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -44,6 +63,12 @@ public class UserController {
   private RoleService roleService;
   @Autowired
   private PasswordEncoder passwordEncoder;
+  @Autowired
+  private UserAdminService userAdminService;
+  @Autowired
+  private UserRoleRepo userRoleRepo;
+
+  private static final Logger logger = LoggerFactory.getLogger(CrmController.class);
 
   @PostMapping("/signup")
   public ResponseEntity<?> registerUser(@RequestBody SignupRequest signupRequest) {
@@ -114,4 +139,58 @@ public class UserController {
       return ResponseEntity.status(403).body("Authentication failed. Check your credentials.");
     }
   }
+
+  @PutMapping("/users/edit/{id}")
+  @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
+  public User editUser(@AuthenticationPrincipal UserDetails userDetails,
+      @RequestBody User user) {
+
+    if (userDetails != null) {
+
+      // Sử dụng thông tin người dùng theo nhu cầu của bạn
+      // Ví dụ: lấy ID nếu UserDetails là CustomUserDetails
+      if (userDetails instanceof CustomUserDetail) {
+        CustomUserDetail customUserDetails = (CustomUserDetail) userDetails;
+        Long userId = customUserDetails.getId();
+        User findUser = userAdminService.get(userId);
+        findUser.setUserName(user.getUserName());
+        findUser.setPassword(user.getPassword());
+        findUser.setName(user.getName());
+        findUser.setAvatar(user.getAvatar());
+        findUser.setEmail(user.getEmail());
+        findUser.setPhone(user.getPhone());
+        userAdminService.save(findUser);
+        return findUser;
+      }
+    }
+
+    return null;
+
+  }
+
+  @GetMapping("/admin/users/{id}")
+  @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
+  public User getUserById(@PathVariable("id") Long id) {
+    User findUser = userAdminService.get(id);
+    return findUser;
+  }
+
+  @PutMapping("/admin/users/edit/{id}")
+  @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
+  public User editUserByAdmin(@PathVariable("id") Long id, @RequestBody User user) {
+    User findUser = userAdminService.get(id);
+    UserRole userRole = new UserRole();
+    findUser.setUserName(user.getUserName());
+    findUser.setPassword(passwordEncoder.encode(user.getPassword()));
+    findUser.setName(user.getName());
+    findUser.setAvatar(user.getAvatar());
+    findUser.setEmail(user.getEmail());
+    findUser.setPhone(user.getPhone());
+    findUser.setListRoles(user.getListRoles());
+    // userRole.setCreatedAt(LocalDateTime.now());
+    // userRole.setUpdatedAt(LocalDateTime.now());
+    userAdminService.save(findUser);
+    return findUser;
+  }
+
 }
