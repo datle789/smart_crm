@@ -121,7 +121,8 @@ public class CrmController {
                 crm.setCrmFile(crmDto.getCrmFile());
                 crm.setStartDate(crmDto.getStartDate());
                 crm.setEndDate(crmDto.getEndDate());
-                crmRepo.save(crm);
+                logger.info("Created ------> {}", crm.getCrmFile());
+                // crmRepo.save(crm);
 
                 // create notification
                 notificationService.createNotification(crm);

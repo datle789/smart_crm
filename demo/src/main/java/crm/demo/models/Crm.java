@@ -34,6 +34,7 @@ public class Crm {
     private String description;
 
     @Column
+    @ElementCollection
     private List<String> crmFile;
 
     private int status;
