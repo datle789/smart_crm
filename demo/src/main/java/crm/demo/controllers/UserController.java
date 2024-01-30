@@ -39,9 +39,7 @@ import crm.demo.Security.CustomUserDetail;
 import crm.demo.models.Erole;
 import crm.demo.models.Roles;
 import crm.demo.models.User;
-import crm.demo.models.UserRole;
 import crm.demo.repo.UserRepo;
-import crm.demo.repo.UserRoleRepo;
 import crm.demo.services.RoleService;
 import crm.demo.services.UserAdminService;
 import crm.demo.services.UserService;
@@ -65,8 +63,6 @@ public class UserController {
   private PasswordEncoder passwordEncoder;
   @Autowired
   private UserAdminService userAdminService;
-  @Autowired
-  private UserRoleRepo userRoleRepo;
 
   private static final Logger logger = LoggerFactory.getLogger(CrmController.class);
 
@@ -179,7 +175,6 @@ public class UserController {
   @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
   public User editUserByAdmin(@PathVariable("id") Long id, @RequestBody User user) {
     User findUser = userAdminService.get(id);
-    UserRole userRole = new UserRole();
     findUser.setUserName(user.getUserName());
     findUser.setPassword(passwordEncoder.encode(user.getPassword()));
     findUser.setName(user.getName());
@@ -187,8 +182,6 @@ public class UserController {
     findUser.setEmail(user.getEmail());
     findUser.setPhone(user.getPhone());
     findUser.setListRoles(user.getListRoles());
-    // userRole.setCreatedAt(LocalDateTime.now());
-    // userRole.setUpdatedAt(LocalDateTime.now());
     userAdminService.save(findUser);
     return findUser;
   }
