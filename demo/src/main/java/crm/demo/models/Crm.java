@@ -34,7 +34,7 @@ public class Crm {
     private String description;
 
     @Column
-    private String crmFile;
+    private List<String> crmFile;
 
     private int status;
 
@@ -96,12 +96,12 @@ public class Crm {
         this.description = description;
     }
 
-    public String getCrmFile() {
-        return crmFile;
+    public void setCrmFile(List<String> crmFile) {
+        this.crmFile = crmFile;
     }
 
-    public void setCrmFile(String crmFile) {
-        this.crmFile = crmFile;
+    public List<String> getCrmFile() {
+        return crmFile;
     }
 
     public Date getStartDate() {
