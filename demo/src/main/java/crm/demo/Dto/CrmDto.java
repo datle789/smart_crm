@@ -25,7 +25,7 @@ public class CrmDto {
 
     private String description;
 
-    private String crmFile;
+    private List<String> crmFile;
 
     private Date startDate;
 
@@ -114,12 +114,12 @@ public class CrmDto {
         }
     }
 
-    public String getCrmFile() {
-        return crmFile;
+    public void setCrmFile(List<String> crmFile) {
+        this.crmFile = crmFile;
     }
 
-    public void setCrmFile(String crmFile) {
-        this.crmFile = crmFile;
+    public List<String> getCrmFile() {
+        return crmFile;
     }
 
     public Date getStartDate() {
