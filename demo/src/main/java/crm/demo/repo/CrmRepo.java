@@ -12,7 +12,7 @@ import crm.demo.models.Crm;
 
 @Repository
 public interface CrmRepo extends JpaRepository<Crm, Long> {
-    @Query("SELECT c FROM Crm c WHERE c.status = 1 AND c.user.id = :user_id")
+    @Query("SELECT c FROM Crm c LEFT JOIN c.crmFile cf WHERE c.status = 1 AND c.user.id = :user_id AND (cf IS NULL OR cf.status = 1)")
     List<Crm> findAllActiveCrms(Long user_id);
 
     @Query("SELECT c FROM Crm c WHERE (:user_id IS NULL OR c.user.id = :user_id) AND" +
