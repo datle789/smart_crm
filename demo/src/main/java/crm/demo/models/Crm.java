@@ -33,10 +33,6 @@ public class Crm {
     @Column
     private String description;
 
-    @Column
-    @ElementCollection
-    private List<String> crmFile;
-
     private int status;
 
     public Crm() {
@@ -97,13 +93,13 @@ public class Crm {
         this.description = description;
     }
 
-    public void setCrmFile(List<String> crmFile) {
-        this.crmFile = crmFile;
-    }
+    // public void setCrmFile(List<String> crmFile) {
+    // this.crmFile = crmFile;
+    // }
 
-    public List<String> getCrmFile() {
-        return crmFile;
-    }
+    // public List<String> getCrmFile() {
+    // return crmFile;
+    // }
 
     public Date getStartDate() {
         return startDate;
@@ -147,9 +143,20 @@ public class Crm {
         return updatedAt;
     }
 
+    @OneToMany(mappedBy = "crm", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    private List<CrmFile> crmFile;
+
+    public List<CrmFile> getCrmFile() {
+        return crmFile;
+    }
+
+    public void setCrmFile(List<CrmFile> crmFile) {
+        this.crmFile = crmFile;
+    }
+
     @OneToMany(mappedBy = "crm", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     // @JsonBackReference
-    // @JsonIgnore
+    @JsonIgnore
     private List<Notification> notifications;
 
     public List<Notification> getNotifications() {

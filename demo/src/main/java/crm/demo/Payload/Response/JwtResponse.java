@@ -12,7 +12,7 @@ public class JwtResponse {
   private String name;
   private String email;
   private String phone;
-  private List<Crm> crms;
+  // private List<Crm> crms;
   private List<String> listRoles;
 
   public String getToken() {
@@ -71,13 +71,13 @@ public class JwtResponse {
     this.phone = phone;
   }
 
-  public List<Crm> getCrms() {
-    return crms;
-  }
+  // public List<Crm> getCrms() {
+  // return crms;
+  // }
 
-  public void setCrms(List<Crm> crms) {
-    this.crms = crms;
-  }
+  // public void setCrms(List<Crm> crms) {
+  // this.crms = crms;
+  // }
 
   public List<String> getListRoles() {
     return listRoles;
@@ -95,7 +95,7 @@ public class JwtResponse {
     this.name = name;
     this.email = email;
     this.phone = phone;
-    this.crms = crms;
+    // this.crms = crms;
     this.listRoles = listRoles;
   }
 

@@ -31,6 +31,7 @@ import crm.demo.models.Crm;
 import crm.demo.models.User;
 import crm.demo.repo.CrmRepo;
 import crm.demo.repo.UserRepo;
+import crm.demo.services.CrmFileService;
 import crm.demo.services.NotificationService;
 import crm.demo.services.SendMailService;
 import crm.demo.utils.ErrorUtil;
@@ -59,6 +60,9 @@ public class CrmController {
 
     @Autowired
     private NotificationService notificationService;
+
+    @Autowired
+    private CrmFileService crmFileService;
 
     private static final Logger logger = LoggerFactory.getLogger(CrmController.class);
 
@@ -99,7 +103,8 @@ public class CrmController {
 
     @PostMapping(value = "/create")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
-    public ResponseEntity<Map<String, Object>> createCrm(@RequestBody CrmDto crmDto) {
+    public ResponseEntity<Map<String, Object>> createCrm(@AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody CrmDto crmDto) {
         try {
 
             if (crmDto.getPhoneNumber() == 0) {
@@ -110,37 +115,52 @@ public class CrmController {
                 return errorUtil.badStatus("Mô tả phải nhiều hơn hoặc bằng 100 kí tự");
             }
 
-            Crm crm = new Crm();
-            User user = userRepo.findById(crmDto.getUserId()).orElse(null);
-            if (user != null) {
-                crm.setUser(user);
-                crm.setCustomerName(crmDto.getCustomerName());
-                crm.setPhoneNumber(crmDto.getPhoneNumber());
-                crm.setTitle(crmDto.getTitle());
-                crm.setDescription(crmDto.getDescription());
-                crm.setCrmFile(crmDto.getCrmFile());
-                crm.setStartDate(crmDto.getStartDate());
-                crm.setEndDate(crmDto.getEndDate());
-                // logger.info("Created ------> {}", crm.getCrmFile());
-                crmRepo.save(crm);
+            if (userDetails != null) {
 
-                // create notification
-                notificationService.createNotification(crm);
+                // Sử dụng thông tin người dùng theo nhu cầu của bạn
+                // Ví dụ: lấy ID nếu UserDetails là CustomUserDetails
+                if (userDetails instanceof CustomUserDetail) {
+                    CustomUserDetail customUserDetails = (CustomUserDetail) userDetails;
+                    Long userId = customUserDetails.getId();
+                    Crm crm = new Crm();
+                    User user = userRepo.findById(userId).orElse(null);
+                    if (user != null) {
+                        crm.setUser(user);
+                        crm.setCustomerName(crmDto.getCustomerName());
+                        crm.setPhoneNumber(crmDto.getPhoneNumber());
+                        crm.setTitle(crmDto.getTitle());
+                        crm.setDescription(crmDto.getDescription());
+                        // crm.setCrmFile(crmDto.getCrmFile());
+                        crm.setStartDate(crmDto.getStartDate());
+                        crm.setEndDate(crmDto.getEndDate());
 
-                // send mail
-                String to = "datdt56789@gmail.com";
-                String subject = crm.getTitle();
-                String body = crm.getDescription();
-                emailService.sendEmail(to, subject, body);
+                        for (int i = 0; i < crmDto.getCrmFile().size(); i++) {
+                            crmFileService.createCrmfile(crmDto.getCrmFile().get(i), crm);
+                        }
 
-                return errorUtil.goodStatus("Crm created successfully");
+                        crmRepo.save(crm);
+
+                        // create notification
+                        notificationService.createNotification(crm);
+
+                        // send mail
+                        String to = "datdt56789@gmail.com";
+                        String subject = crm.getTitle();
+                        String body = crm.getDescription();
+                        emailService.sendEmail(to, subject, body);
+
+                        return errorUtil.goodStatus("Crm created successfully");
+                    }
+                }
+
+                return errorUtil.badStatus("user id is invalid");
+
             } else {
                 return errorUtil.badStatus("user id is invalid");
             }
         } catch (Exception e) {
             return errorUtil.badStatus("crm is invalid");
         }
-
     }
 
     @PutMapping(value = "/update/{id}")
@@ -163,9 +183,16 @@ public class CrmController {
                 crm.setPhoneNumber(crmDto.getPhoneNumber());
                 crm.setTitle(crmDto.getTitle());
                 crm.setDescription(crmDto.getDescription());
-                crm.setCrmFile(crmDto.getCrmFile());
+                // crm.setCrmFile(crmDto.getCrmFile());
                 crm.setStartDate(crmDto.getStartDate());
                 crm.setEndDate(crmDto.getEndDate());
+
+                crmFileService.updateCrmFile(id);
+
+                for (int i = 0; i < crmDto.getCrmFile().size(); i++) {
+                    crmFileService.createCrmfile(crmDto.getCrmFile().get(i), crm);
+                }
+
                 crmRepo.save(crm);
 
                 // Create Notification

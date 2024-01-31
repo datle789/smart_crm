@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
+import crm.demo.models.CrmFile;
 import crm.demo.models.Notification;
 import crm.demo.models.User;
 import crm.demo.utils.ErrorUtil;
@@ -25,7 +26,7 @@ public class CrmDto {
 
     private String description;
 
-    private List<String> crmFile;
+    private List<CrmFile> crmFile;
 
     private Date startDate;
 
@@ -114,11 +115,11 @@ public class CrmDto {
         }
     }
 
-    public void setCrmFile(List<String> crmFile) {
+    public void setCrmFile(List<CrmFile> crmFile) {
         this.crmFile = crmFile;
     }
 
-    public List<String> getCrmFile() {
+    public List<CrmFile> getCrmFile() {
         return crmFile;
     }
 
