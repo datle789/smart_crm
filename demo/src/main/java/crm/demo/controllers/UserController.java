@@ -122,7 +122,7 @@ public class UserController {
       SecurityContextHolder.getContext().setAuthentication(authentication);
       CustomUserDetail customUserDetails = (CustomUserDetail) authentication.getPrincipal();
       if (customUserDetails.getStatus() == 0) {
-        return errorUtil.badStatus("user is not active");
+        return errorUtil.badStatus("user is not actived");
       }
       String jwt = jwtTokenProvider.genarateToken(customUserDetails);
       List<String> listRoles = customUserDetails.getAuthorities().stream()
