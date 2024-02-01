@@ -141,7 +141,7 @@ public class UserController {
     }
   }
 
-  @PutMapping("/users/edit/{id}")
+  @PutMapping("/users/edit/")
   @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
   public User editUser(@AuthenticationPrincipal UserDetails userDetails,
       @RequestBody User user) {
