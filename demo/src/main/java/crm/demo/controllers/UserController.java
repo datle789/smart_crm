@@ -1,14 +1,9 @@
 package crm.demo.controllers;
 
-import java.lang.module.Configuration;
-import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import javax.management.relation.Role;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import crm.demo.Dto.UserDto;
 import crm.demo.Jwt.JwtTokenProvider;
 import crm.demo.Payload.Request.LoginRequest;
 import crm.demo.Payload.Request.SignupRequest;
@@ -39,7 +33,6 @@ import crm.demo.Security.CustomUserDetail;
 import crm.demo.models.Erole;
 import crm.demo.models.Roles;
 import crm.demo.models.User;
-import crm.demo.repo.UserRepo;
 import crm.demo.services.RoleService;
 import crm.demo.services.UserAdminService;
 import crm.demo.services.UserService;
@@ -162,6 +155,12 @@ public class UserController {
 
     return null;
 
+  }
+
+  @GetMapping("/admin/users/")
+  @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
+  public List<User> getListUsers() {
+    return userAdminService.getListUsers();
   }
 
   @GetMapping("/admin/users/{id}")

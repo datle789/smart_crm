@@ -18,6 +18,10 @@ public class UserAdminService {
     @Autowired
     private RoleRepo roleRepo;
 
+    public List<User> getListUsers() {
+        return userRoleRepo.findAll();
+    }
+
     public User get(Long id) {
         return userRoleRepo.findById(id).get();
     }

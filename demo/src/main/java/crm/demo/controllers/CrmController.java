@@ -1,17 +1,14 @@
 package crm.demo.controllers;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import crm.demo.Dto.CrmDto;
-import crm.demo.Payload.Response.JwtResponse;
 import crm.demo.Security.CustomUserDetail;
 import crm.demo.models.Crm;
 import crm.demo.models.User;
@@ -35,14 +31,11 @@ import crm.demo.services.CrmFileService;
 import crm.demo.services.NotificationService;
 import crm.demo.services.SendMailService;
 import crm.demo.utils.ErrorUtil;
-import io.jsonwebtoken.Claims;
 
 import java.time.LocalDate;
 import java.util.Collections;
 import io.micrometer.common.util.StringUtils;
 
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.slf4j.Logger;
 
 @CrossOrigin(origins = "*")
@@ -130,7 +123,6 @@ public class CrmController {
                         crm.setPhoneNumber(crmDto.getPhoneNumber());
                         crm.setTitle(crmDto.getTitle());
                         crm.setDescription(crmDto.getDescription());
-                        // crm.setCrmFile(crmDto.getCrmFile());
                         crm.setStartDate(crmDto.getStartDate());
                         crm.setEndDate(crmDto.getEndDate());
 
@@ -183,7 +175,6 @@ public class CrmController {
                 crm.setPhoneNumber(crmDto.getPhoneNumber());
                 crm.setTitle(crmDto.getTitle());
                 crm.setDescription(crmDto.getDescription());
-                // crm.setCrmFile(crmDto.getCrmFile());
                 crm.setStartDate(crmDto.getStartDate());
                 crm.setEndDate(crmDto.getEndDate());
 
