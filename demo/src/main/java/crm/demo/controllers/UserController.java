@@ -141,6 +141,26 @@ public class UserController {
     }
   }
 
+  @GetMapping("/users/detail/")
+  @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
+  public User userDetail(@AuthenticationPrincipal UserDetails userDetails) {
+
+    if (userDetails != null) {
+
+      // Sử dụng thông tin người dùng theo nhu cầu của bạn
+      // Ví dụ: lấy ID nếu UserDetails là CustomUserDetails
+      if (userDetails instanceof CustomUserDetail) {
+        CustomUserDetail customUserDetails = (CustomUserDetail) userDetails;
+        Long userId = customUserDetails.getId();
+        User findUser = userAdminService.get(userId);
+        return findUser;
+      }
+    }
+
+    return null;
+
+  }
+
   @PutMapping("/users/edit/")
   @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
   public User editUser(@AuthenticationPrincipal UserDetails userDetails,
