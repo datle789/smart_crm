@@ -2,6 +2,7 @@ package crm.demo.controllers;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,12 +32,15 @@ import crm.demo.Payload.Request.SignupRequest;
 import crm.demo.Payload.Response.JwtResponse;
 import crm.demo.Payload.Response.MessageResponse;
 import crm.demo.Security.CustomUserDetail;
+import crm.demo.models.Crm;
 import crm.demo.models.Erole;
 import crm.demo.models.Roles;
 import crm.demo.models.User;
+import crm.demo.repo.UserRepo;
 import crm.demo.services.RoleService;
 import crm.demo.services.UserAdminService;
 import crm.demo.services.UserService;
+import crm.demo.utils.ErrorUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +61,10 @@ public class UserController {
   private PasswordEncoder passwordEncoder;
   @Autowired
   private UserAdminService userAdminService;
+  @Autowired
+  private UserRepo userRepo;
+
+  ErrorUtil errorUtil = new ErrorUtil();
 
   private static final Logger logger = LoggerFactory.getLogger(CrmController.class);
 
@@ -112,6 +121,9 @@ public class UserController {
           new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
       SecurityContextHolder.getContext().setAuthentication(authentication);
       CustomUserDetail customUserDetails = (CustomUserDetail) authentication.getPrincipal();
+      if (customUserDetails.getStatus() == 0) {
+        return errorUtil.badStatus("user is not active");
+      }
       String jwt = jwtTokenProvider.genarateToken(customUserDetails);
       List<String> listRoles = customUserDetails.getAuthorities().stream()
           .map(item -> item.getAuthority()).collect(Collectors.toList());
@@ -183,6 +195,20 @@ public class UserController {
     findUser.setListRoles(user.getListRoles());
     userAdminService.save(findUser);
     return findUser;
+  }
+
+  @DeleteMapping(value = "/admin/users/delete/{id}")
+  @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
+  public ResponseEntity<Map<String, Object>> deleteUser(@PathVariable long id) {
+    User user = userAdminService.get(id);
+    if (user != null) {
+      user.setStatus(0);
+      userRepo.save(user);
+      return errorUtil.goodStatus("user deleted successfully");
+    } else {
+      return errorUtil.badStatus("user with specified id not found");
+    }
+
   }
 
 }
