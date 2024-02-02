@@ -142,7 +142,7 @@ public class UserController {
   }
 
   @GetMapping("/users/detail/")
-  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+  @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
   public User userDetail(@AuthenticationPrincipal UserDetails userDetails) {
 
     if (userDetails != null) {
@@ -162,7 +162,7 @@ public class UserController {
   }
 
   @PutMapping("/users/edit/")
-  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+  @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
   public User editUser(@AuthenticationPrincipal UserDetails userDetails,
       @RequestBody User user) {
 
@@ -190,20 +190,20 @@ public class UserController {
   }
 
   @GetMapping("/admin/users/")
-  @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
   public List<User> getListUsers() {
     return userAdminService.getListUsers();
   }
 
   @GetMapping("/admin/users/{id}")
-  @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
   public User getUserById(@PathVariable("id") Long id) {
     User findUser = userAdminService.get(id);
     return findUser;
   }
 
   @PutMapping("/admin/users/edit/{id}")
-  @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
   public User editUserByAdmin(@PathVariable("id") Long id, @RequestBody User user) {
     User findUser = userAdminService.get(id);
     findUser.setUserName(user.getUserName());
@@ -218,7 +218,7 @@ public class UserController {
   }
 
   @DeleteMapping(value = "/admin/users/delete/{id}")
-  @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
   public ResponseEntity<Map<String, Object>> deleteUser(@PathVariable long id) {
     User user = userAdminService.get(id);
     if (user != null) {

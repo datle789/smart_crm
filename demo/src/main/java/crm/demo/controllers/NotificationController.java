@@ -18,7 +18,7 @@ public class NotificationController {
     private NotificationRepo notificationRepo;
 
     @GetMapping(value = "/")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
     public List<Notification> getNotifications() {
         return notificationRepo.findAll();
         // return notificationRepo.findAllActiveNotifications();
