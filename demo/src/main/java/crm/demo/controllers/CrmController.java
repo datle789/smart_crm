@@ -62,7 +62,7 @@ public class CrmController {
     ErrorUtil errorUtil = new ErrorUtil();
 
     @GetMapping(value = "/")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public List<Crm> getCrm(@AuthenticationPrincipal UserDetails userDetails) {
 
         if (userDetails != null) {
@@ -80,7 +80,7 @@ public class CrmController {
     }
 
     @GetMapping(value = "/admin")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<Crm> getAdminCrm(
             @RequestParam(name = "userId", required = false) Long selectedUserId,
             @RequestParam(name = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate selectedStartDate,
@@ -89,13 +89,13 @@ public class CrmController {
     }
 
     @GetMapping(value = "/{id}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public Crm getCrmById(@PathVariable long id) {
         return crmRepo.findById(id).get();
     }
 
     @PostMapping(value = "/create")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> createCrm(@AuthenticationPrincipal UserDetails userDetails,
             @RequestBody CrmDto crmDto) {
         try {
@@ -156,7 +156,7 @@ public class CrmController {
     }
 
     @PutMapping(value = "/update/{id}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> updateCrm(@PathVariable long id, @RequestBody CrmDto crmDto) {
         try {
 
@@ -206,7 +206,7 @@ public class CrmController {
     }
 
     @DeleteMapping(value = "/delete/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> deleteCrm(@PathVariable long id) {
 
         Crm crm = crmRepo.findById(id).orElse(null);
