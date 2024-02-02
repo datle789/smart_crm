@@ -21,11 +21,6 @@ public class FileUploadImpl implements FileUpload {
     public List<String> uploadFile(List<MultipartFile> multipartFile) throws IOException {
         List<String> successMessages = new ArrayList<>();
         for (MultipartFile file : multipartFile) {
-            // cloudinary.uploader()
-            // .upload(file.getBytes(),
-            // Map.of("public_id", UUID.randomUUID().toString()))
-            // .get("url")
-            // .toString();
             successMessages.add("File uploaded successfully: " + cloudinary.uploader()
                     .upload(file.getBytes(),
                             Map.of("public_id", UUID.randomUUID().toString()))
