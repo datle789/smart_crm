@@ -26,11 +26,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import crm.demo.Dto.UserDto;
 import crm.demo.Jwt.JwtTokenProvider;
 import crm.demo.Payload.Request.LoginRequest;
 import crm.demo.Payload.Request.SignupRequest;
 import crm.demo.Payload.Response.JwtResponse;
 import crm.demo.Payload.Response.MessageResponse;
+import crm.demo.Payload.Response.UserResponse;
 import crm.demo.Security.CustomUserDetail;
 import crm.demo.models.Crm;
 import crm.demo.models.Erole;
@@ -141,7 +143,7 @@ public class UserController {
     }
   }
 
-  @GetMapping("/users/detail/")
+  @GetMapping("/users/detail")
   @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
   public User userDetail(@AuthenticationPrincipal UserDetails userDetails) {
 
@@ -161,9 +163,9 @@ public class UserController {
 
   }
 
-  @PutMapping("/users/edit/")
+  @PutMapping("/users/edit")
   @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
-  public User editUser(@AuthenticationPrincipal UserDetails userDetails,
+  public ResponseEntity<Map<String, Object>> editUser(@AuthenticationPrincipal UserDetails userDetails,
       @RequestBody User user) {
 
     if (userDetails != null) {
@@ -175,21 +177,44 @@ public class UserController {
         Long userId = customUserDetails.getId();
         User findUser = userAdminService.get(userId);
         findUser.setUserName(user.getUserName());
-        findUser.setPassword(user.getPassword());
         findUser.setName(user.getName());
         findUser.setAvatar(user.getAvatar());
         findUser.setEmail(user.getEmail());
         findUser.setPhone(user.getPhone());
         userAdminService.save(findUser);
-        return findUser;
       }
+
+      return errorUtil.goodStatus("user updated successfully");
     }
 
-    return null;
+    return errorUtil.badStatus("user with specified id not found");
 
   }
 
-  @GetMapping("/admin/users/")
+  @PutMapping("/users/changepassword")
+  @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
+  public ResponseEntity<Map<String, Object>> changePassword(@AuthenticationPrincipal UserDetails userDetails,
+      @RequestBody UserDto user) {
+    if (userDetails != null) {
+
+      // Sử dụng thông tin người dùng theo nhu cầu của bạn
+      // Ví dụ: lấy ID nếu UserDetails là CustomUserDetails
+      if (userDetails instanceof CustomUserDetail) {
+        CustomUserDetail customUserDetails = (CustomUserDetail) userDetails;
+        Long userId = customUserDetails.getId();
+        User findUser = userAdminService.get(userId);
+        findUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        userAdminService.save(findUser);
+      }
+
+      return errorUtil.goodStatus("Change password successfully");
+    }
+
+    return errorUtil.badStatus("user with specified id not found");
+
+  }
+
+  @GetMapping("/admin/users")
   @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
   public List<User> getListUsers() {
     return userAdminService.getListUsers();
@@ -204,17 +229,21 @@ public class UserController {
 
   @PutMapping("/admin/users/edit/{id}")
   @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
-  public User editUserByAdmin(@PathVariable("id") Long id, @RequestBody User user) {
+  public ResponseEntity<Map<String, Object>> editUserByAdmin(@PathVariable("id") Long id, @RequestBody User user) {
     User findUser = userAdminService.get(id);
-    findUser.setUserName(user.getUserName());
-    findUser.setPassword(passwordEncoder.encode(user.getPassword()));
-    findUser.setName(user.getName());
-    findUser.setAvatar(user.getAvatar());
-    findUser.setEmail(user.getEmail());
-    findUser.setPhone(user.getPhone());
-    findUser.setListRoles(user.getListRoles());
-    userAdminService.save(findUser);
-    return findUser;
+    if (findUser != null) {
+      findUser.setUserName(user.getUserName());
+      findUser.setName(user.getName());
+      findUser.setAvatar(user.getAvatar());
+      findUser.setEmail(user.getEmail());
+      findUser.setPhone(user.getPhone());
+      findUser.setListRoles(user.getListRoles());
+      userAdminService.save(findUser);
+      return errorUtil.goodStatus("admin updated successfully");
+    }
+
+    return errorUtil.badStatus("user with specified id not found");
+
   }
 
   @DeleteMapping(value = "/admin/users/delete/{id}")
