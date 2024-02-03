@@ -12,6 +12,16 @@ public class UserDto {
 
     private String password;
 
+    private String oldPassword;
+
+    public String getOldPassword() {
+        return oldPassword;
+    }
+
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
+    }
+
     private String name;
 
     private String avatar;

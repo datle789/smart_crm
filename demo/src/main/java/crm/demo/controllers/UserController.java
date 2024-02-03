@@ -203,8 +203,16 @@ public class UserController {
         CustomUserDetail customUserDetails = (CustomUserDetail) userDetails;
         Long userId = customUserDetails.getId();
         User findUser = userAdminService.get(userId);
-        findUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        userAdminService.save(findUser);
+        // Lấy mật khẩu đã mã hóa từ cơ sở dữ liệu
+        String currentEncodedPassword = findUser.getPassword();
+
+        // So sánh mật khẩu nhập vào với mật khẩu đã mã hóa
+        if (passwordEncoder.matches(user.getOldPassword(), currentEncodedPassword)) {
+          findUser.setPassword(passwordEncoder.encode(user.getPassword()));
+          userAdminService.save(findUser);
+        } else {
+          return errorUtil.badStatus("Password doesn't match");
+        }
       }
 
       return errorUtil.goodStatus("Change password successfully");
