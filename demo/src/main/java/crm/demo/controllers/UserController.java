@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -44,9 +45,6 @@ import crm.demo.services.UserAdminService;
 import crm.demo.services.UserService;
 import crm.demo.utils.ErrorUtil;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/api/auth")
@@ -68,7 +66,7 @@ public class UserController {
 
   ErrorUtil errorUtil = new ErrorUtil();
 
-  private static final Logger logger = LoggerFactory.getLogger(CrmController.class);
+  private static Logger logger = Logger.getLogger(UserController.class);
 
   @PostMapping("/signup")
   public ResponseEntity<?> registerUser(@RequestBody SignupRequest signupRequest) {
@@ -129,6 +127,7 @@ public class UserController {
       String jwt = jwtTokenProvider.genarateToken(customUserDetails);
       List<String> listRoles = customUserDetails.getAuthorities().stream()
           .map(item -> item.getAuthority()).collect(Collectors.toList());
+      logger.debug("Đăng nhập thành công ");
       return ResponseEntity.ok(new JwtResponse(
           jwt,
           customUserDetails.getId(),
@@ -139,6 +138,7 @@ public class UserController {
           customUserDetails.getCrms(),
           listRoles));
     } catch (Exception e) {
+      logger.debug("Sai tài khoản hoặc mật khẩu ");
       return ResponseEntity.status(403).body("Authentication failed. Check your credentials.");
     }
   }
