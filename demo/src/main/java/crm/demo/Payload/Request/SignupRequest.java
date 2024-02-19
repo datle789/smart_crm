@@ -2,6 +2,8 @@ package crm.demo.Payload.Request;
 
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SignupRequest {
   private String username;
@@ -13,7 +15,12 @@ public class SignupRequest {
   private int status;
   private Set<String> listRoles;
 
+  private static final String PHONE_NUMBER_PATTERN = "^\\+?[0-9]{1,3}[\\s-]?\\(?[0-9]{1,3}\\)?[\\s-]?[0-9]{3,}$";
+
   public String getUsername() {
+    if (username == null || username.trim().isEmpty()) {
+      username = null;
+    }
     return username;
   }
 
@@ -22,6 +29,9 @@ public class SignupRequest {
   }
 
   public String getPassword() {
+    if (password == null || password.trim().isEmpty()) {
+      password = null;
+    }
     return password;
   }
 
@@ -50,7 +60,23 @@ public class SignupRequest {
   }
 
   public void setPhone(String phone) {
-    this.phone = phone;
+    // Kiểm tra xem phoneNumber có phải là null không
+    if (phone != null) {
+      if (isValidPhoneNumber(phone)) {
+        this.phone = phone;
+      } else {
+        this.phone = null;
+      }
+    } else {
+      this.phone = null;
+    }
+  }
+
+  // Kiểm tra định dạng số điện thoại bằng regex
+  private boolean isValidPhoneNumber(String phoneNumber) {
+    Pattern pattern = Pattern.compile(PHONE_NUMBER_PATTERN);
+    Matcher matcher = pattern.matcher(phoneNumber);
+    return matcher.matches();
   }
 
   public LocalDateTime getCreatedAt() {

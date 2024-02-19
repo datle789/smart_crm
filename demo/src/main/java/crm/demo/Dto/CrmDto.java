@@ -16,11 +16,11 @@ public class CrmDto {
 
     private String customerName;
 
-    private static final String PHONE_NUMBER_PATTERN = "^(\\+[0-9]{1,4})?([-\\s./0-9])?([0-9]+)$";
+    private static final String PHONE_NUMBER_PATTERN = "^\\+?[0-9]{1,3}[\\s-]?\\(?[0-9]{1,3}\\)?[\\s-]?[0-9]{3,}$";
 
     ErrorUtil errorUtil = new ErrorUtil();
 
-    private long phoneNumber;
+    private String phoneNumber;
 
     private String title;
 
@@ -74,24 +74,27 @@ public class CrmDto {
         this.customerName = customerName;
     }
 
-    public long getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(long phoneNumber) {
-        // Kiểm tra định dạng số điện thoại trước khi gán giá trị
-        if (isValidPhoneNumber(phoneNumber)) {
-            this.phoneNumber = phoneNumber;
+    public void setPhoneNumber(String phoneNumber) {
+        // Kiểm tra xem phoneNumber có phải là null không
+        if (phoneNumber != null) {
+            if (isValidPhoneNumber(phoneNumber)) {
+                this.phoneNumber = phoneNumber;
+            } else {
+                this.phoneNumber = null;
+            }
         } else {
-            this.phoneNumber = 0;
+            this.phoneNumber = null;
         }
     }
 
     // Kiểm tra định dạng số điện thoại bằng regex
-    private boolean isValidPhoneNumber(long phoneNumber) {
-        String phoneNumberStr = String.valueOf(phoneNumber);
+    private boolean isValidPhoneNumber(String phoneNumber) {
         Pattern pattern = Pattern.compile(PHONE_NUMBER_PATTERN);
-        Matcher matcher = pattern.matcher(phoneNumberStr);
+        Matcher matcher = pattern.matcher(phoneNumber);
         return matcher.matches();
     }
 
