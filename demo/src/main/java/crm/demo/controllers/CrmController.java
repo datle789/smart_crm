@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,6 +32,7 @@ import crm.demo.services.CrmFileService;
 import crm.demo.services.NotificationService;
 import crm.demo.services.SendMailService;
 import crm.demo.utils.ErrorUtil;
+import org.springframework.security.core.Authentication;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -61,32 +63,42 @@ public class CrmController {
 
     ErrorUtil errorUtil = new ErrorUtil();
 
-    @GetMapping(value = "/")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
-    public List<Crm> getCrm(@AuthenticationPrincipal UserDetails userDetails) {
+    @GetMapping(value = "")
+    public List<Crm> getCrm(@AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam(name = "userId", required = false) Long selectedUserId,
+            @RequestParam(name = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate selectedStartDate,
+            @RequestParam(name = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate selectedEndDate) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (userDetails != null) {
-
-            // Sử dụng thông tin người dùng theo nhu cầu của bạn
-            // Ví dụ: lấy ID nếu UserDetails là CustomUserDetails
-            if (userDetails instanceof CustomUserDetail) {
-                CustomUserDetail customUserDetails = (CustomUserDetail) userDetails;
-                Long userId = customUserDetails.getId();
-                return crmRepo.findAllActiveCrms(userId);
+        if (authentication != null) {
+            // Kiểm tra vai trò của người dùng
+            if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+                // Nếu người dùng là admin, lấy tất cả CRM
+                return crmRepo.filterCrms(selectedUserId, selectedStartDate, selectedEndDate);
+            } else {
+                // Nếu người dùng không phải là admin, lấy CRM của người dùng hiện tại
+                if (userDetails instanceof CustomUserDetail) {
+                    CustomUserDetail customUserDetails = (CustomUserDetail) userDetails;
+                    Long userId = customUserDetails.getId();
+                    return crmRepo.findAllActiveCrms(userId);
+                }
             }
         }
 
         return Collections.emptyList();
     }
 
-    @GetMapping(value = "/admin")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
-    public List<Crm> getAdminCrm(
-            @RequestParam(name = "userId", required = false) Long selectedUserId,
-            @RequestParam(name = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate selectedStartDate,
-            @RequestParam(name = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate selectedEndDate) {
-        return crmRepo.filterCrms(selectedUserId, selectedStartDate, selectedEndDate);
-    }
+    // @GetMapping(value = "/admin")
+    // @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
+    // public List<Crm> getAdminCrm(
+    // @RequestParam(name = "userId", required = false) Long selectedUserId,
+    // @RequestParam(name = "startDate", required = false) @DateTimeFormat(iso =
+    // DateTimeFormat.ISO.DATE) LocalDate selectedStartDate,
+    // @RequestParam(name = "endDate", required = false) @DateTimeFormat(iso =
+    // DateTimeFormat.ISO.DATE) LocalDate selectedEndDate) {
+    // return crmRepo.filterCrms(selectedUserId, selectedStartDate,
+    // selectedEndDate);
+    // }
 
     @GetMapping(value = "/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
