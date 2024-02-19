@@ -100,7 +100,7 @@ public class CrmController {
             @RequestBody CrmDto crmDto) {
         try {
 
-            if (crmDto.getPhoneNumber() == 0) {
+            if (crmDto.getPhoneNumber() == null) {
                 return errorUtil.badStatus("Số điện thoại không phù hợp với định dạng");
             }
 
@@ -160,7 +160,7 @@ public class CrmController {
     public ResponseEntity<Map<String, Object>> updateCrm(@PathVariable long id, @RequestBody CrmDto crmDto) {
         try {
 
-            if (crmDto.getPhoneNumber() == 0) {
+            if (crmDto.getPhoneNumber() == null) {
                 return errorUtil.badStatus("Số điện thoại không phù hợp với định dạng");
             }
 

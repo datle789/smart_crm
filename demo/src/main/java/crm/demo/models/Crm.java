@@ -25,7 +25,7 @@ public class Crm {
     private String customerName;
 
     @Column
-    private long phoneNumber;
+    private String phoneNumber;
 
     @Column
     private String title;
@@ -69,11 +69,11 @@ public class Crm {
         this.customerName = customerName;
     }
 
-    public long getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(long phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 

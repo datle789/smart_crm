@@ -71,10 +71,19 @@ public class UserController {
   @PostMapping("/signup")
   public ResponseEntity<?> registerUser(@RequestBody SignupRequest signupRequest) {
     if (userService.existByUserName(signupRequest.getUsername())) {
-      return ResponseEntity.badRequest().body(new MessageResponse("Error : Username is already"));
+      return errorUtil.badStatus("Username đã tồn tại");
+    }
+    if (signupRequest.getUsername() == null) {
+      return errorUtil.badStatus("Username không được để trống");
+    }
+    if (signupRequest.getPassword() == null) {
+      return errorUtil.badStatus("Password không được để trống");
     }
     if (userService.existByEmail(signupRequest.getEmail())) {
-      return ResponseEntity.badRequest().body(new MessageResponse("Error : Email is already"));
+      return errorUtil.badStatus("Email đã tồn tại");
+    }
+    if (signupRequest.getPhone() == null) {
+      return errorUtil.badStatus("Số điện thoại không đúng định dạng");
     }
 
     User users = new User();
@@ -111,7 +120,7 @@ public class UserController {
     }
     users.setListRoles(listRoles);
     userService.saveOrUpdate(users);
-    return ResponseEntity.ok(new MessageResponse("User registered successfully"));
+    return errorUtil.goodStatus("Đăng ký thành công");
   }
 
   @PostMapping("/signin")
