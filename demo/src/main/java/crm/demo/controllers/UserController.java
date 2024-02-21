@@ -1,5 +1,6 @@
 package crm.demo.controllers;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -239,9 +240,18 @@ public class UserController {
 
   @GetMapping("/admin/users/{id}")
   @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
-  public User getUserById(@PathVariable("id") Long id) {
-    User findUser = userAdminService.get(id);
-    return findUser;
+  public List<User> getUserById(@PathVariable("id") Long id) {
+
+    User user = userRepo.findById(id).orElse(null); // Lấy Crm từ ID
+
+    List<User> result = new ArrayList<>(); // Khởi tạo một ArrayList
+
+    if (user != null) {
+      result.add(user); // Nếu Crm không null, thêm vào ArrayList
+    }
+
+    return result;
+
   }
 
   @PutMapping("/admin/users/edit/{id}")

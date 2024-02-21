@@ -35,6 +35,7 @@ import crm.demo.utils.ErrorUtil;
 import org.springframework.security.core.Authentication;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import io.micrometer.common.util.StringUtils;
 
@@ -102,8 +103,16 @@ public class CrmController {
 
     @GetMapping(value = "/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
-    public Crm getCrmById(@PathVariable long id) {
-        return crmRepo.findById(id).get();
+    public List<Crm> getCrmById(@PathVariable long id) {
+        Crm crm = crmRepo.findById(id).orElse(null); // Lấy Crm từ ID
+
+        List<Crm> result = new ArrayList<>(); // Khởi tạo một ArrayList
+
+        if (crm != null) {
+            result.add(crm); // Nếu Crm không null, thêm vào ArrayList
+        }
+
+        return result;
     }
 
     @PostMapping(value = "/create")
