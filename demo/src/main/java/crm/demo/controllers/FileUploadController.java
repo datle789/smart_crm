@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
-@CrossOrigin(origins = { "http://localhost:3000" })
+// @CrossOrigin(origins = "*")
 @RequestMapping("/api/upload")
 public class FileUploadController {
 
