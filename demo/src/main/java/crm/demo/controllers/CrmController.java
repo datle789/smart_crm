@@ -157,10 +157,10 @@ public class CrmController {
                         notificationService.createNotification(crm);
 
                         // send mail
-                        String to = "datdt56789@gmail.com";
-                        String subject = crm.getTitle();
-                        String body = crm.getDescription();
-                        emailService.sendEmail(to, subject, body);
+                        // String to = "datdt56789@gmail.com";
+                        // String subject = crm.getTitle();
+                        // String body = crm.getDescription();
+                        // emailService.sendEmail(to, subject, body);
 
                         return errorUtil.goodStatus("Crm created successfully");
                     }
@@ -211,10 +211,10 @@ public class CrmController {
                 notificationService.createNotification(crm);
 
                 // Send Mail
-                String to = "datletb789@gmail.com";
-                String subject = crm.getTitle();
-                String body = crm.getDescription();
-                emailService.sendEmail(to, subject, body);
+                // String to = "datletb789@gmail.com";
+                // String subject = crm.getTitle();
+                // String body = crm.getDescription();
+                // emailService.sendEmail(to, subject, body);
 
                 return errorUtil.goodStatus("Crm updated successfully");
             } else {
