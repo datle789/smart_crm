@@ -125,6 +125,12 @@ public class UserController {
 
   @PostMapping("/signin")
   public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    if (loginRequest.getUsername() == null) {
+      return errorUtil.badStatus("Chưa nhập username");
+    }
+    if (loginRequest.getPassword() == null) {
+      return errorUtil.badStatus("Chưa nhập password");
+    }
     try {
       Authentication authentication = authenticationManager.authenticate(
           new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -148,7 +154,7 @@ public class UserController {
           listRoles));
     } catch (Exception e) {
       logger.debug("Sai tài khoản hoặc mật khẩu ");
-      return ResponseEntity.status(403).body("Authentication failed. Check your credentials.");
+      return errorUtil.badStatus("Sai tài khoản hoặc mật khẩu");
     }
   }
 

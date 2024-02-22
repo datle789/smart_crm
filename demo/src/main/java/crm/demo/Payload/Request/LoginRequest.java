@@ -5,6 +5,9 @@ public class LoginRequest {
   private String password;
 
   public String getUsername() {
+    if (username == null || username.trim().isEmpty()) {
+      username = null;
+    }
     return username;
   }
 
@@ -13,6 +16,9 @@ public class LoginRequest {
   }
 
   public String getPassword() {
+    if (password == null || password.trim().isEmpty()) {
+      password = null;
+    }
     return password;
   }
 
