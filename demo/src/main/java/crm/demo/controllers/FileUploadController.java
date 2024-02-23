@@ -22,8 +22,8 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
-@CrossOrigin(origins = { "http://localhost:3000" })
 @RequestMapping("/api/upload")
+@CrossOrigin(origins = "*")
 public class FileUploadController {
 
     private final FileUpload fileUpload;
