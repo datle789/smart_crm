@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,11 +31,11 @@ public class FileUploadController {
     private static final Logger logger = LoggerFactory.getLogger(CrmController.class);
 
     @PostMapping("/")
-    public ResponseEntity<Map<String, Object>> uploadFile(@RequestParam("image") List<MultipartFile> multipartFile,
-            Model model) throws IOException {
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
+    public ResponseEntity<Map<String, Object>> uploadFile(@RequestParam("image") List<MultipartFile> multipartFile)
+            throws IOException {
         Map<String, Object> response = new HashMap<>();
         List<String> imageURL = fileUpload.uploadFile(multipartFile);
-        model.addAttribute("imageURL", imageURL);
         response.put("status", HttpStatus.OK.value());
         response.put("imageURL", imageURL);
         return ResponseEntity.ok(response);
