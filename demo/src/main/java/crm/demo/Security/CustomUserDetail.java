@@ -32,6 +32,7 @@ public class CustomUserDetail implements UserDetails {
   private String password;
   private String email;
   private String name;
+  private String avatar;
   private String phone;
   private int status;
   private List<Crm> crms;
@@ -53,6 +54,7 @@ public class CustomUserDetail implements UserDetails {
         users.getPassword(),
         users.getEmail(),
         users.getName(),
+        users.getAvatar(),
         users.getPhone(),
         users.getStatus(),
         users.getCrms(), lAuthorities);

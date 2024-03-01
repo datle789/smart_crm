@@ -10,6 +10,7 @@ public class JwtResponse {
   private Long id;
   private String username;
   private String name;
+  private String avatar;
   private String email;
   private String phone;
   // private List<Crm> crms;
@@ -55,6 +56,14 @@ public class JwtResponse {
     this.name = name;
   }
 
+  public String getAvatar() {
+    return avatar;
+  }
+
+  public void setAvatar(String avatar) {
+    this.avatar = avatar;
+  }
+
   public String getEmail() {
     return email;
   }
@@ -87,12 +96,14 @@ public class JwtResponse {
     this.listRoles = listRoles;
   }
 
-  public JwtResponse(String token, Long id, String username, String name, String email, String phone, List<Crm> crms,
+  public JwtResponse(String token, Long id, String username, String name, String avatar, String email, String phone,
+      List<Crm> crms,
       List<String> listRoles) {
     this.token = token;
     this.id = id;
     this.username = username;
     this.name = name;
+    this.avatar = avatar;
     this.email = email;
     this.phone = phone;
     // this.crms = crms;

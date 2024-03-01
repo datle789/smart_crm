@@ -149,6 +149,7 @@ public class UserController {
           customUserDetails.getId(),
           customUserDetails.getUsername(),
           customUserDetails.getName(),
+          customUserDetails.getAvatar(),
           customUserDetails.getEmail(),
           customUserDetails.getPhone(),
           customUserDetails.getCrms(),
