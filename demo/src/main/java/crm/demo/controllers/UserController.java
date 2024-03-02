@@ -159,6 +159,7 @@ public class UserController {
     }
   }
 
+  // không dùng đến
   @GetMapping("/users/detail")
   @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
   public User userDetail(@AuthenticationPrincipal UserDetails userDetails) {
@@ -179,6 +180,7 @@ public class UserController {
 
   }
 
+  // không dùng đến
   @PutMapping("/users/edit")
   @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
   public ResponseEntity<Map<String, Object>> editUser(@AuthenticationPrincipal UserDetails userDetails,
@@ -227,7 +229,7 @@ public class UserController {
           findUser.setPassword(passwordEncoder.encode(user.getPassword()));
           userAdminService.save(findUser);
         } else {
-          return errorUtil.badStatus("Password doesn't match");
+          return errorUtil.badStatus("Mật khẩu không đúng");
         }
       }
 
@@ -245,7 +247,7 @@ public class UserController {
   }
 
   @GetMapping("/admin/users/{id}")
-  @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
+  @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
   public List<User> getUserById(@PathVariable("id") Long id) {
 
     User user = userRepo.findById(id).orElse(null); // Lấy Crm từ ID
@@ -261,7 +263,7 @@ public class UserController {
   }
 
   @PutMapping("/admin/users/edit/{id}")
-  @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
+  @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('MODERATOR')")
   public ResponseEntity<Map<String, Object>> editUserByAdmin(@PathVariable("id") Long id, @RequestBody User user) {
     User findUser = userAdminService.get(id);
     if (findUser != null) {
